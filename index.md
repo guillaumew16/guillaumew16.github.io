@@ -12,7 +12,8 @@ My name is Guillaume Wang, I am (or will be) a researcher in theoretical machine
 I recently started as a research intern at the [Statistical Machine Learning group](https://sml.inf.ethz.ch/) at ETH Zurich, where I will likely pursue a PhD afterwards.
 Before that I was a Master student in Computer Science at ETH.
 Before that I was a student at Ecole polytechnique.
-You can find my [CV here](contents/CV_WangGuillaume_2021-04.pdf).
+
+You can find my [CV here](contents/CV_WangGuillaume_2021-04.pdf); my Master's thesis final [report here](contents/Master_s_thesis_report-final.pdf), and [slides here](contents/Master_s_thesis_presentation-final.pdf).
 
 This webpage is meant to advertise myself and my publications, but I don't have any yet. Come back later!
 In the meantime, I may use this space to share some thoughts and ideas.
