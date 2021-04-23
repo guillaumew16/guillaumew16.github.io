@@ -1,37 +1,19 @@
-## Welcome to GitHub Pages
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
-You can use the [editor on GitHub](https://github.com/guillaumew16/guillaumew16.github.io/edit/main/index.md) to maintain and preview the content for your website in Markdown files.
+layout: home
+---
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Welcome
 
-### Markdown
+My name is Guillaume Wang, I am (or will be) a researcher in theoretical machine learning.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+I recently started as a research intern at the [Statistical Machine Learning group](https://sml.inf.ethz.ch/) at ETH Zurich, where I will likely pursue a PhD afterwards.
+Before that I was a Master student in Computer Science at ETH.
+Before that I was a student at Ecole polytechnique.
 
-```markdown
-Syntax highlighted code block
+This webpage is meant to advertise myself and my publications, but I don't have any yet. Come back later!
+In the meantime, I may use this space to share some thoughts and ideas.
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/guillaumew16/guillaumew16.github.io/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+**Note:** to lift any confusion, I am *not* the famous cellist of the same name. I have never touched a cello in my life.
