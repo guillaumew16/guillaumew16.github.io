@@ -21,8 +21,11 @@ without giving any context on Volterra series, as it is not necessary;
 for a clean introduction to these objects, see chapter 4 of my Master's
 thesis [report](/contents/Master_s_thesis_report-final.pdf).)
 
-Preliminaries
-=============
+
+* This will become a table of contents (this text will be scrapped).
+{:toc}
+
+### Preliminaries
 
 **Notations and shorthands**
 Fix some integer $$n > 0$$.
@@ -80,10 +83,8 @@ projection operator from $$L^p(\mathbb{R}^n)$$ to
 $$L^p_{\mathop{\mathrm{Sym}}}(\mathbb{R}^n)$$, and from
 $$C_0(\mathbb{R}^n)$$ to $$C_{0 \mathop{\mathrm{Sym}}}(\mathbb{R}^n)$$.
 
-The result and why it looks surprising to me
-============================================
+### The result and why it looks surprising to me
 
-<!-- <div class="proposition" markdown="1" text='bla'> -->
 <div class="proposition" markdown="1" text="main result">
 Let $$1 \leq p < \infty$$. The set $$\left\lbrace
         f^{\otimes n}(\boldsymbol{t}) ;~ f \in L^p(\mathbb{R})
@@ -181,8 +182,7 @@ developing the product $$f_i(t_1)...f_i(t_n)$$ would yield an a priori big
 polynomial, whereas directly using Weierstrass with symmetrization can
 yield simply $$t_1+...+t_n$$ itself.
 
-Brief proof of the result
-=========================
+### Brief proof of the result
 
 In this section we prove the $$L^p/L^q$$ ($$1 \leq p < \infty$$) part of the
 proposition; the $$C_0/\mathcal{M}$$ part can be proved by the same
@@ -290,8 +290,7 @@ Since this holds for all $$A_i$$, and hyperrectangles generate the Borel
 $$\sigma$$-algebra, then $$h=0$$, as claimed.
 </div>
 
-Is the result interesting/useful?
-=================================
+### Is the result interesting/useful?
 
 For the subjects that I'm currently leaning towards, the result
 presented in this document is actually pretty useless, as it only talks
@@ -302,6 +301,8 @@ $$\varepsilon$$-approximate a given target function $$g$$.
 However I still find the result technically interesting and surprising.
 I never heard about it before but I'm certain it must be somewhere out
 there already -- I would be glad to know where and in what context.
+
+------
 
 [^1]: Disclaimer: the term \"symmetric tensor function\" may not be
     consistent with standard terminology, I haven't checked.

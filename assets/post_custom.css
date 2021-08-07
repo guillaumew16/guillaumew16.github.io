@@ -3,8 +3,9 @@
 
 .theorem {
     display: block;
-    margin: 12px 0;
-    font-style: italic;
+    margin: 12px 0 0 2em;
+    font-style: normal;
+    background-color: rgb(255, 0, 0, 0.1);
 }
 .theorem:before {
     content: "Theorem. ";
@@ -17,8 +18,9 @@
 
 .proposition {
     display: block;
-    margin: 12px 0;
-    font-style: italic;
+    margin: 12px 0 0 2em;
+    font-style: normal;
+    background-color: rgb(255, 127, 0, 0.1);
 }
 .proposition:before {
     content: "Proposition. ";
@@ -31,8 +33,9 @@
 
 .lemma {
     display: block;
-    margin: 12px 0;
-    font-style: italic;
+    margin: 12px 0 0 2em;
+    font-style: normal;
+    background-color: rgb(255, 255, 0, 0.1);
 }
 .lemma:before {
     content: "Lemma. ";
@@ -45,8 +48,9 @@
 
 .proof {
     display: block;
-    margin: 12px 0;
+    margin: 12px 0 0 2em;
     font-style: normal;
+    background-color: rgb(255, 255, 255, 0.1);
 }
 .proof:before {
     content: "Proof. ";
@@ -60,10 +64,25 @@
     float:right;
 }
 
+.remark {
+    display: block;
+    margin: 12px 0 0 2em;
+    font-style: normal;
+    background-color: rgb(0, 127, 255, 0.05);
+}
+.remark:before {
+    content: "Remark. ";
+    font-style: italic;
+}
+.remark[text]:before {
+    content: "Remark (" attr(text) "). ";
+}
+
 .definition {
     display: block;
-    margin: 12px 0;
+    margin: 12px 0 0 2em;
     font-style: normal;
+    background-color: rgb(0, 255, 255, 0.1);
 }
 .definition:before {
     content: "Definition. ";
