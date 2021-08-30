@@ -28,6 +28,8 @@ url: "https://guillaumew16.github.io" # the base hostname & protocol for your si
 # twitter_username: jekyllrb
 github_username:  guillaumew16
 
+google_analytics: G-1NEBMFFCE9
+
 # Build settings
 # theme: jekyll-theme-minimal
 theme: minima
