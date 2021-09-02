@@ -31,6 +31,9 @@ Fenchel-Rockafellar duality theorem is that it is general enough to
 contain all of that black magic, making duality-based derivations easier
 to follow.
 
+* This will become a table of contents (this text will be scrapped).
+{:toc}
+
 ### Generic supervised learning setup and notation {#sec:setup_notation}
 
 Consider supervised learning with a linear model (linear in the
@@ -97,7 +100,7 @@ Further pose the shorthands:
 Let us state the FRDT with machine-learning-friendly notation, as
 motivated above.
 
-<div class="theorem" markdown="1" text="Hahn-Banach">
+<div class="theorem" markdown="1" text="FRDT">
 Let $$\mathcal{W}$$ and $$\mathcal{Y}$$ be two real Banach spaces. Let
 $$\Psi \in \Gamma(\mathcal{W})$$, let
 $$\mathcal{L}\in \Gamma(\mathcal{Y})$$, and let
