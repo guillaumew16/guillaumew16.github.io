@@ -20,7 +20,7 @@
 
 title: Guillaume Wang's github page
 author: Guillaume Wang
-email: guillaume.wang@inf.ethz.ch
+email: guillaume.wang@epfl.ch
 description: >- # this means to ignore newlines until "baseurl:"
   Machine learning theory, applied mathematics, etc.
 baseurl: "" # the subpath of your site, e.g. /blog
@@ -59,6 +59,8 @@ exclude:
   - about.md
   - latex_src/
   - README.md
+  - CONTRIBUTING.md
+  
   - CONTRIBUTING.md
   - Gemfile
   - Gemfile.lock

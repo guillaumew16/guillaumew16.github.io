@@ -4,8 +4,8 @@ title: About
 permalink: /about/
 ---
 
-My name is Guillaume Wang, I am (or will be) a researcher in theoretical machine learning.
+My name is Guillaume Wang, I am a first-year PhD student in Mathematics at the DOLA chair at EPFL, advised by [Prof. Lénaïc Chizat](https://lchizat.github.io/).
 
-I recently started as a research intern at the [Statistical Machine Learning group](https://sml.inf.ethz.ch/) at ETH Zurich, where I will likely pursue a PhD afterwards.
+Before that I was a research intern at the [Statistical Machine Learning](https://sml.inf.ethz.ch/) group at ETH Zurich.
 Before that I was a Master student in Computer Science at ETH.
 Before that I was a student at Ecole polytechnique.
