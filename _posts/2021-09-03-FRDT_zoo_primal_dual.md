@@ -124,17 +124,6 @@ $$a_{t+1} = \text{Update}_a(w_{t+1},a_t)$$. One can even consider using
 joint updates: $$w_{t+1} = \text{Update}_w(w_t,a_t)$$,
 $$a_{t+1} = \text{Update}_a(w_t,a_t)$$.
 
-<div class="remark" markdown="1" text="MD-SP and MP-SP">
-(This remark is not specific to regularized linear models.)
-
-One may ask: why not just use algorithms designed specifically to solve
-saddle point problems? I know of two: mirror-descent for saddle points
-(MD-SP)[^1] and mirror-prox for saddle points (MP-SP).[^2] As it turns
-out, they are equivalent to two of our many variants of primal-dual
-methods, so mentioning them would be redundant. Namely, they both
-correspond to mirror descent on both primal and dual variables; MD-SP
-performs joint updates while MP-SP performs alternating updates.
-</div>
 
 ### Examples
 
