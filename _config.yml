@@ -60,7 +60,5 @@ exclude:
   - latex_src/
   - README.md
   - CONTRIBUTING.md
-  
-  - CONTRIBUTING.md
   - Gemfile
   - Gemfile.lock
