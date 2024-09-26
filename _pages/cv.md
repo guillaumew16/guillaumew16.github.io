@@ -1,11 +1,15 @@
 ---
-layout: cv
+layout: default
 permalink: /cv/
-title: cv
+title: CV
 nav: true
 nav_order: 5
-cv_pdf: example_pdf.pdf
-description: This is a description of the page. You can modify it in '_pages/cv.md'. You can also change or remove the top pdf download button.
+cv_pdf: academic_CV.pdf
+description: Academic CV
 toc:
   sidebar: left
 ---
+
+You can find my academic CV here: [link]({{ page.cv_pdf | prepend: 'assets/pdf/' | relative_url}}).
+
+An industry-friendly résumé is under construction.
