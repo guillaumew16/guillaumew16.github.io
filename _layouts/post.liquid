@@ -5,6 +5,8 @@ layout: default
 {% assign tags = page.tags | join: '' %}
 {% assign categories = page.categories | join: '' %}
 
+<link rel="stylesheet" href="{{ '/assets/css/post_custom.css' | relative_url | bust_file_cache }}">
+
 {% if page._styles %}
   <!-- Page/Post style -->
   <style type="text/css">

@@ -1,17 +1,15 @@
 ---
 layout: post
 date:   2021-07-25
+last_updated: 2024-09-26
 categories: math
 author: Guillaume Wang
 title: |
-  A fun byproduct of my Master's thesis:
-  symmetric tensor functions are dense in the space of
-  permutation-invariant multivariate functions
+  Symmetric tensor functions are dense in the space of
+  permutation-invariant functions
 ---
 
-> I prepared this post a long while ago but only posted it here in July. This is because I had written it in LaTeX and converting it to MD was not completely trivial. Since I had no incentive to post it, this small barrier was enough for me to procrastinate several months...
->
-> I'm not completely satisfied with the math rendering, so here is the [LaTeX version](/contents/symmetric_funs_density.pdf).
+> I prepared this post a long while ago but only posted it here in July 2021. This is because I had written it in LaTeX and converting it to MD was not completely trivial. Since I had no incentive to post it, this small barrier was enough for me to procrastinate several months...
 
 During my Master's thesis, I encountered several interesting technical
 points that were not directly related to the thesis topic, so that I
@@ -59,7 +57,7 @@ $$f: \mathbb{R}\to \mathbb{R}$$, and similarly $$g(\boldsymbol{t})$$ instead of
 $$g: \mathbb{R}^n \to \mathbb{R}$$.
 
 **Some function spaces**
-Fix $$1 \leq p < \infty$$ and $$q$$ its conjugate exponent, i.e $$1/p+1/q=1$$.
+Fix $$1 \leq p < \infty$$ and $$q$$ its conjugate exponent, i.e., $$1/p+1/q=1$$.
 
 -   Let $$L^p(\mathbb{R})$$ be the Banach space of $$L^p$$-integrable
     functions over $$\mathbb{R}$$ (with the usual Lebesgue measure). Its
@@ -309,6 +307,6 @@ there already -- I would be glad to know where and in what context.
 
 [^2]: <https://regularize.wordpress.com/2011/11/11/dual-spaces-of-continuous-functions/>
 
-[^3]: I'm pretty sure the same holds if $$C_0$$ is replaced by $$C_b$$ i.e
+[^3]: I'm pretty sure the same holds if $$C_0$$ is replaced by $$C_b$$, i.e,
     if we consider bounded continuous functions, instead of vanishing
     continuous.
