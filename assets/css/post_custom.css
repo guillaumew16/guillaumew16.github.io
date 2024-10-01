@@ -92,3 +92,18 @@
 .definition[text]:before {
     content: "Definition (" attr(text) "). ";
 }
+
+.assumption {
+    display: block;
+    margin: 12px 0 0 2em;
+    font-style: normal;
+    background-color: rgba(0, 89, 255, 0.1);
+}
+.assumption:before {
+    content: "Assumption. ";
+    font-weight: bold;
+    font-style: normal;
+}
+.assumption[text]:before {
+    content: "Assumption (" attr(text) "). ";
+}
