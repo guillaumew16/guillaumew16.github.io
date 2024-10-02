@@ -6,8 +6,9 @@ permalink: /
 
 profile:
   align: right
-  image: snowy_20240926.jpg
-  image_circular: true # crops the image to make it circular
+  # image: snowy_20240926.jpg
+  image: portrait_2024-09.jpg
+  image_circular: false # crops the image to make it circular
   # more_info: >
   #   <p>555 your office number</p>
   #   <p>123 your address street</p>

@@ -417,6 +417,7 @@ $$f^*(y) = \sup_{x \in \mathcal{Z}} x^\top y - f(x)$$. Then
 $$f(x_t) = \sum_{n=2}^\infty \frac{1}{n (n-2)!} \left[ {\left.\frac{d^n}{dz^n}\right|_{z=0}} f^*(zY) \right] e^{-nt} 
 ~~~~\text{where}~~
 Y = \nabla h(x_0) - \nabla h(x^*).$$
+
 </div>
 
 #### Birth-death dynamics.
