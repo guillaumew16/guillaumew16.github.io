@@ -215,7 +215,7 @@ The proposition will be proved by applying the above density criterion.
 To do so we will need the following intuitively obvious lemma,
 characterizing the dual of $$L^p_{\mathop{\mathrm{Sym}}}(\mathbb{R}^n)$$.
 A formal and rather uninteresting proof can be found
-in appendix of the [LaTeX version](/contents/symmetric_funs_density.pdf).
+in appendix of the [LaTeX version](/assets/pdf/symmetric_funs_density.pdf).
 
 <div class="lemma" markdown="1">
 The dual of $$L^p_{\mathop{\mathrm{Sym}}}(\mathbb{R}^n)$$ is isometrically

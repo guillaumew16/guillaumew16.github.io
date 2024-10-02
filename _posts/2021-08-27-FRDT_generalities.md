@@ -11,7 +11,7 @@ title: |
 
 > This is the first of a series of posts on optimization of regularized linear models through the lens of duality.
 > The series will be essentially a summary of what I learned during the first few weeks of my internship, when I looked into topics related to learning in Banach spaces (before I moved on to different, more concrete topics).
-> The relevant convex analysis background can be found in last time's [cheatsheet](/math/2021/08/08/func_convex_analysis_cheatsheet.html) -- which is basically the zero-th post of this series.
+> The relevant convex analysis background can be found in last time's [cheatsheet](/blog/2021/func_convex_analysis_cheatsheet) -- which is basically the zero-th post of this series.
 > 
 > With the background definitions under our belt, we are *almost* ready to talk about concrete consequences of convex duality.
 > As it turns out, to get a principled understanding of the many places where duality pops up, it is beneficial to first present the Fenchel-Rockafellar duality theorem, a kind of "master theorem" for convex duality.
@@ -120,13 +120,13 @@ $$
 Denote $$S_P$$ and $$S_D$$ their respective optimal solution sets. Denote
 the KKT conditions 
 
-$$\label{eq:FRDT_KKT_Psi} \tag{KKT_Psi}
+$$\label{eq:FRDT_KKT_Psi} \tag{$\mathrm{KKT}_\Psi$}
 w \in \partial \Psi^*(-V^* a)
 ~~\text{i.e}~~
 -V^* a \in \partial \Psi(w)
 $$
 
-$$\label{eq:FRDT_KKT_L} \tag{KKT_L}
+$$\label{eq:FRDT_KKT_L} \tag{$\mathrm{KKT}_{\mathcal{L}}$}
 a \in \partial \mathcal{L}(V w)
 ~~\text{i.e}~~
 V w \in \partial \mathcal{L}^*(a)
@@ -139,7 +139,7 @@ Suppose that
 $$0 \in \text{interior}( V(\mathop{\mathrm{dom}}\Psi)- \mathop{\mathrm{dom}}\mathcal{L})$$.
 Then strong duality holds:
 
--   (P) and (D) have the same optimal value
+-   $$\eqref{eq:FRDT_primal}$$ and $$\eqref{eq:FRDT_dual}$$ have the same optimal value
     $$P_{\text{opt}} = D_{\text{opt}}$$;
 
 -   $$w \in S_P$$ and $$a \in S_D$$ iff

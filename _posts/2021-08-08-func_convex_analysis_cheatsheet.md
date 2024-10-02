@@ -8,8 +8,6 @@ title: A functional and convex analysis cheat sheet
 
 > Another post that was prepared a while ago and "snoozed" until now...
 > It is part of a planned series of posts on linear models and regularization, and a tinge of optimization.
->
-> As last time, I'm not satisfied with the math rendering, so here is the [LaTeX version](/contents/func_convex_analysis_cheatsheet.pdf).
 
 Among the topics that I've been interested in during the last few
 months, many required some knowledge of convex analysis: regularization

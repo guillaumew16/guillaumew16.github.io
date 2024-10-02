@@ -50,7 +50,8 @@
     display: block;
     margin: 12px 0 0 2em;
     font-style: normal;
-    background-color: rgb(255, 255, 255, 0.1);
+    background-color: rgba(128, 128, 128, 0.1);
+    position: relative
 }
 .proof:before {
     content: "Proof. ";
@@ -61,7 +62,9 @@
 }
 .proof:after {
     content: "\25FC";
-    float:right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
 }
 
 .remark {

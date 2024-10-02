@@ -119,7 +119,7 @@ $$P_x = I_d - A^\top \left[ A \Phi_x^{-1} A^\top \right]^{-1} A \Phi_x^{-1}$$.
 </div>
 
 <div class="remark" markdown="1">
-*Remark 1*. One can check that $$P_x^2 = P_x$$ and
+One can check that $$P_x^2 = P_x$$ and
 $$P_x \Phi_x = \Phi_x P_x^\top$$, and that $$P_x^\top$$ is the orthogonal
 projection onto $$\mathop{\mathrm{Ker}}A$$ w.r.t. the inner product
 $$\left\langle \cdot, \cdot \right\rangle_{\Phi_x}$$. [^2]
@@ -219,10 +219,9 @@ convergence in function value.
 
 <div class="proposition" markdown="1">
 We have that $$t \mapsto f(x_t)$$ is non-increasing and 
-
 $$f(x_t) - f^* \leq \frac{\mu}{e^{\mu t}-1}
 % \left( D_h(x^*, x_0) - e^{\mu t} D_h(x^*, x_t) \right).
-D_h(x^*, x_0).$$
+D_h(x^*, x_0)$$.
 </div>
 
 
@@ -318,8 +317,11 @@ $$\nabla h^* = (\nabla h)^{-1}$$.
 
 Suppose furthermore that $$f(x) = D_h(x, x^*)$$ for some $$x^*$$, and let
 $$y^* = \nabla h(x^*)$$. Then $$\nabla f = \nabla h - y^*$$ and
-$$\frac{dy_t}{dt} = y^* - \nabla h(x_t) = -(y_t - y^*)$$, so
-$$y_t = y^* + e^{-t} (y_0 - y^*)$$.
+
+$$\frac{dy_t}{dt} = y^* - \nabla h(x_t) = -(y_t - y^*), 
+~~~~\text{so}~~~~
+y_t = y^* + e^{-t} (y_0 - y^*).$$
+
 </div>
 
 #### With linear equality constraints.
@@ -362,8 +364,11 @@ $$\frac{dy_t}{dt}
 Suppose furthermore that $$f(x) = D_h(x, x^*)$$ for some $$x^*$$ and let
 $$y^* := \nabla h(x^*) \in \mathop{\mathrm{Ker}}A$$. Then
 $$\nabla f = \nabla h - y^*$$ and
-$$\frac{dy_t}{dt} = -\Pi\left( \nabla h(x_t) - y^* \right) = -(y_t - y^*)$$,
-so $$y_t = y^* + e^{-t} (y_0 - y^*)$$.
+
+$$\frac{dy_t}{dt} = -\Pi\left( \nabla h(x_t) - y^* \right) = -(y_t - y^*),
+~~~~\text{so}~~~~
+y_t = y^* + e^{-t} (y_0 - y^*).$$
+
 </div>
 
 <div class="proof" markdown="1">
@@ -371,7 +376,7 @@ The first part of the proposition follows from the definition
 of MF and from the fact that
 $$\Pi P_x = \Pi (I_d - A^\top \left[ A \Phi_x^{-1} A^\top \right]^{-1} A \Phi_x^{-1}) = \Pi$$,
 since $$A \Pi^\top = A \Pi = 0$$. The rest of the proposition can be
-checked directly. ◻
+checked directly.
 </div>
 
 #### The expansion.

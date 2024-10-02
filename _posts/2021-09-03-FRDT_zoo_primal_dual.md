@@ -10,7 +10,7 @@ title: |
 ---
 
 > This is the second of a series of posts on optimization of regularized linear models through the lens of duality.
-> See the first one [here](/math/2021/08/27/FRDT_generalities.html).
+> See the first one [here](/blog/2021/FRDT_generalities).
 
 
 * This will become a table of contents (this text will be scrapped).
@@ -18,21 +18,26 @@ title: |
 
 We will continue with the notation from last time, in particular:
 - the primal problem is
+    
     $$\label{eq:FRDT_primal} \tag{P}
     \min_{w \in \mathcal{W}} \Psi(w) + \mathcal{L}(V w) =: P(w)
     $$
+
 - the dual problem is
+    
     $$\label{eq:FRDT_dual} \tag{D}
     \max_{a \in \mathcal{Y}^*} - \Psi^*(-V^* a) - \mathcal{L}^*(a) =: D(a).
     $$
+
 - the KKT conditions are
-    $$\label{eq:FRDT_KKT_Psi} \tag{KKT_Psi}
+    
+    $$\label{eq:FRDT_KKT_Psi} \tag{$\mathrm{KKT}_\Psi$}
     w \in \partial \Psi^*(-V^* a)
     ~~\text{i.e}~~
     -V^* a \in \partial \Psi(w)
     $$
 
-    $$\label{eq:FRDT_KKT_L} \tag{KKT_L}
+    $$\label{eq:FRDT_KKT_L} \tag{$\mathrm{KKT}_{\mathcal{L}}$}
     a \in \partial \mathcal{L}(V w)
     ~~\text{i.e}~~
     V w \in \partial \mathcal{L}^*(a)

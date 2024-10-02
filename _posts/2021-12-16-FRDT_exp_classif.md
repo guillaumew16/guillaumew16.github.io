@@ -10,7 +10,7 @@ title: |
 ---
 
 > This is the third of a series of posts on optimization of regularized linear models through the lens of duality.
-> See the first one [here](/math/2021/08/27/FRDT_generalities.html).
+> See the first one [here](/blog/2021/FRDT_generalities) and the second one [here](/blog/2021/FRDT_zoo_primal_dual).
 
 
 * This will become a table of contents (this text will be scrapped).
@@ -18,10 +18,13 @@ title: |
 
 We will continue with the notation from last times, in particular:
 - the primal problem is
+
     $$\label{eq:FRDT_primal} \tag{P}
     \min_{w \in \mathcal{W}} \Psi(w) + \mathcal{L}(V w) =: P(w)
     $$
+
 - the dual problem is
+
     $$\label{eq:FRDT_dual} \tag{D}
     \max_{a \in \mathcal{Y}^*} - \Psi^*(-V^* a) - \mathcal{L}^*(a) =: D(a).
     $$
@@ -148,7 +151,7 @@ In [(Ji, Srebro and Telgarsky, 2021)](http://arxiv.org/abs/2107.00595), they pro
 problem (Algorithm 1 of the paper). To present it would require a
 discussion of accelerated mirror descent, which would take us a bit far.
 Let us only say that their method is essentially just a variant of what
-we called the "fully dual approach" [last time](/math/2021/09/03/FRDT_zoo_primal_dual.html#duality-gap-formulation-and-fully-dual-approach-the-frank-wolfe-algorithm), with mirror descent replaced by
+we called the "fully dual approach" [last time](/blog/2021/FRDT_zoo_primal_dual#duality-gap-formulation-and-fully-dual-approach-the-frank-wolfe-algorithm), with mirror descent replaced by
 a form of accelerated mirror descent.
 
 Interestingly, their new method can also be interpreted as an instance
@@ -258,7 +261,7 @@ obtain different choices for the adaptive stepsize. We may expect
 AdaBoost to have similar regularization behavior for all of them.
 
 Note that AdaBoost is thus strongly reminiscent of the Frank-Wolfe-like
-method obtained by what we called the "[fully dual](/math/2021/09/03/FRDT_zoo_primal_dual.html#duality-gap-formulation-and-fully-dual-approach-the-frank-wolfe-algorithm) approach":
+method obtained by what we called the "fully dual approach" [last time](/blog/2021/FRDT_zoo_primal_dual#duality-gap-formulation-and-fully-dual-approach-the-frank-wolfe-algorithm):
 
 $$\begin{aligned}
     w_0, a_0 & ~\text{such that}~ a_0 \in \partial \widetilde{\mathcal{L}}(Vw_0) \\
@@ -288,6 +291,7 @@ In fact, I expect that deriving and obtaining guarantees for fast
 $$\ell_1$$-margin maximization is a very straightforward task, by making
 the appropriate adaptations in the proofs of that paper.
 
+------
 
 [^1]: Beyond the exponential loss, the same trick can be applied for
     other choices of surrogate loss $$\ell$$. A crucial condition for the
