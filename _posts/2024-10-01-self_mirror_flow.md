@@ -432,7 +432,7 @@ $$\mathcal{Z}= \Delta_N = \left\{ \mu \in \mathbb{R}_+^N; {\boldsymbol{1}}^\top 
 and $$f, h: \mathcal{Z}\to \mathbb{R}$$ defined by
 $$f(\mu) = \mathsf{KL}\left( \mu \middle\| \nu \right)$$ and
 $$h(\mu) = \mathsf{KL}\left( \mu \middle\| {\boldsymbol{1}} \right)$$. 
-One can check that MF for this $$f$$ with this link function $$h$$, is precisely the birth-death dynamics from the introduction.
+One can check that MF for this $$f$$, with this link function $$h$$, is precisely the birth-death dynamics from the introduction.
 
 It is well-known that $$f(\mu) = D_h(\mu, \nu)$$ and that
 
