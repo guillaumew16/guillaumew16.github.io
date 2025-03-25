@@ -220,7 +220,6 @@ convergence in function value.
 <div class="proposition" markdown="1">
 We have that $$t \mapsto f(x_t)$$ is non-increasing and 
 $$f(x_t) - f^* \leq \frac{\mu}{e^{\mu t}-1}
-% \left( D_h(x^*, x_0) - e^{\mu t} D_h(x^*, x_t) \right).
 D_h(x^*, x_0)$$.
 </div>
 
