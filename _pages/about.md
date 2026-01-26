@@ -31,3 +31,5 @@ Before that I was a Master student in Computer Science at ETH.
 Before that I was a student at Ecole polytechnique.
 
 **Note:** to lift any confusion, I am *not* the famous cellist of the same name. I have never touched a cello in my life.
+
+Email: `firstname.lastname [at] nyu.edu`
