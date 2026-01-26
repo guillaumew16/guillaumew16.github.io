@@ -19,10 +19,12 @@ selected_papers: false # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
 ---
 
-I am a 4th-year PhD student in Mathematics at EPFL, advised by [Prof. Lénaïc Chizat](https://lchizat.github.io/).
+I am a postdoctoral researcher in Mathematics at NYU (Courant instructor).
 
 I'm broadly interested in theory for machine learning, particularly if it explains what machine learning models "actually" do. 
 The tools I've found most useful for this, so far, come from optimization (convex and non-convex) and optimal transport.
+
+Prior to this, I completed my PhD in Mathematics at EPFL, where I was fortunate to be advised by [Prof. Lénaïc Chizat](https://lchizat.github.io/).
 
 Before that I was a research intern at the [Statistical Machine Learning](https://sml.inf.ethz.ch/) group at ETH Zurich.
 Before that I was a Master student in Computer Science at ETH.
