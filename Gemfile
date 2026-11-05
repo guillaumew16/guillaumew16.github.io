@@ -27,3 +27,5 @@ group :other_plugins do
     gem 'feedjira'
     gem 'httparty'
 end
+
+gem "bundler-audit", "~> 0.9.3", group: :development, require: false
