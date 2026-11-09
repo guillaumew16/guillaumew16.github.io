@@ -1,1 +1,22 @@
-bundle exec jekyll build
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Run from the repository root.
+cd "$(dirname "$0")/.."
+
+# Build the main website.
+JEKYLL_ENV=production bundle exec jekyll build
+
+# Build the Quarto blog.
+quarto render quarto-blog
+
+# Replace the generated Jekyll blog with Quarto's output.
+test -f quarto-blog/_site/index.html
+# rm -rf _site/blog
+# mkdir -p _site/blog
+# cp -a quarto-blog/_site/. _site/blog/
+cp -a quarto-blog/_site/. _site/quarto-blog/
+### TODO: remove this line, uncomment the above lines, simplify _pages/blog.md
+
+# Mark the assembled website as ready to serve.
+touch _site/.nojekyll

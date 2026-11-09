@@ -9,3 +9,6 @@ assets/libs/
 node_modules/
 vendor
 .idea
+quarto-blog/.quarto/
+/.quarto/
+**/*.quarto_ipynb

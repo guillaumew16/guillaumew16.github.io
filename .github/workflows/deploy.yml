@@ -28,6 +28,8 @@ on:
       - "!FAQ.md"
       - "!INSTALL.md"
       - "!README.md"
+      - "quarto-blog/**"
+      - "bin/cibuild"
   pull_request:
     branches:
       - master
@@ -55,6 +57,8 @@ on:
       - "!FAQ.md"
       - "!INSTALL.md"
       - "!README.md"
+      - "quarto-blog/**"
+      - "bin/cibuild"
   workflow_dispatch:
 
 permissions:
@@ -88,6 +92,12 @@ jobs:
         run: |
           npm install -g purgecss
           purgecss -c purgecss.config.js
+          
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+      - name: Build and assemble website
+        run: bash bin/cibuild
+
       - name: Deploy 🚀
         if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@v4
