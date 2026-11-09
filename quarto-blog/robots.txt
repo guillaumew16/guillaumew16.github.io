@@ -1,0 +1,1 @@
+Sitemap: https://guillaumew16.github.io/quarto-blog/sitemap.xml

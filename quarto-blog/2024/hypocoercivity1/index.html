@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Guillaume Wang">
+<meta name="dcterms.date" content="2024-10-02">
+
+<title>Hypocoercivity in finite dimension (1/2) – guillaumew16’s blog</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-8d3ad9c781c51ccd60b292c95058b2c2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">guillaumew16’s blog</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://guillaumew16.github.io/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+            <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Hypocoercivity in finite dimension (1/2)</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">math</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Guillaume Wang </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 2, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  <div>
+    <div class="abstract">
+      <div class="block-title">Abstract</div>
+      For a linear dynamical system <span class="math inline">\(\dot{x}_t = -M x_t\)</span>, coercivity is when <span class="math inline">\(\frac{d}{dt} \|x_t\| \leq -\alpha \|x_t\|\)</span> for some <span class="math inline">\(\alpha&gt;0\)</span>, and hypocoercivity is when <span class="math inline">\(\|x_t\| = O(e^{-\alpha t})\)</span> even though there’s no coercivity. Coercivity is relatively simple to understand, but hypocoercivity can be pretty weird, even in finite dimension. In optimization and machine learning, coercivity covers gradient descent-type situations, and hypocoercivity arises when studying min-max or accelerated gradient algorithms.
+    </div>
+  </div>
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#coercivity" id="toc-coercivity" class="nav-link active" data-scroll-target="#coercivity">Coercivity</a></li>
+  <li><a href="#hypocoercivity" id="toc-hypocoercivity" class="nav-link" data-scroll-target="#hypocoercivity">Hypocoercivity</a></li>
+  <li><a href="#the-case-with-a-psd-symmetric-part" id="toc-the-case-with-a-psd-symmetric-part" class="nav-link" data-scroll-target="#the-case-with-a-psd-symmetric-part">The case with a PSD symmetric part</a>
+  <ul class="collapse">
+  <li><a href="#how-to-get-a-convergence-rate" id="toc-how-to-get-a-convergence-rate" class="nav-link" data-scroll-target="#how-to-get-a-convergence-rate">How to get a convergence rate?</a></li>
+  </ul></li>
+  <li><a href="#whats-next" id="toc-whats-next" class="nav-link" data-scroll-target="#whats-next">What’s next</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content" tabindex="-1">
+
+
+
+
+
+<!-- **TL;DR:** For a linear dynamical system $\dot{x}_t = -M x_t$, coercivity is when $\frac{d}{dt} \|x_t\| \leq -\alpha \|x_t\|$ for some $\alpha>0$, and hypocoercivity is when $\|x_t\| = O(e^{-\alpha t})$ even though there's no coercivity. Coercivity is relatively simple to understand, but hypocoercivity can be pretty weird, even in finite dimension. In optimization and machine learning, coercivity covers gradient descent-type situations, and hypocoercivity arises when studying min-max or accelerated gradient algorithms. -->
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="coercive.png" class="img-fluid figure-img"></p>
+<figcaption>Coercivity. Inlay: the iterates (<span class="math inline">\(d=2\)</span>). Centered disk added for scale.</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="hypo.png" class="img-fluid figure-img"></p>
+<figcaption>Hypocoercivity. Note the almost-flat phases. (Here the symmetric part of <span class="math inline">\(M\)</span> is PSD, hence monotony.)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<section id="coercivity" class="level1 page-columns page-full">
+<h1>Coercivity</h1>
+<p>Let us call a matrix <span class="math inline">\(M \in \mathbb{R}^{d \times d}\)</span> <em>coercive</em> if there exists a constant <span class="math inline">\(\alpha&gt;0\)</span> such that <span class="math inline">\(\forall x \in \mathbb{R}^d, x^\top M x \geq \alpha \|x\|^2\)</span> (where <span class="math inline">\(\|x\|\)</span> denotes the Euclidean norm). This definition is consistent with the other uses of the term “coercive” in mathematics:</p>
+<ul>
+<li><p>a function <span class="math inline">\(F: \mathbb{R}^d \to \mathbb{R}\)</span> is called coercive iff all its sublevel sets <span class="math inline">\(\left\{ x; F(x) \leq v \right\}\)</span> (for <span class="math inline">\(v \in \mathbb{R}\)</span>) are compact;</p></li>
+<li><p>a vector field <span class="math inline">\(f: \mathbb{R}^d \to \mathbb{R}^d\)</span> is called coercive iff <span class="math inline">\(x^\top f(x) \geq \omega(\|x\|)\)</span> as <span class="math inline">\(\|x\| \to \infty\)</span>. So coercivity for a matrix <span class="math inline">\(M\)</span> is like a quantitative version of the coercivity for the vector field <span class="math inline">\(x \mapsto M x\)</span>.</p></li>
+</ul>
+<p>The notion of coercive matrix dates back to the 1950s, with the foundational paper “Parabolic Equations” <span class="citation" data-cites="lax1954parabolic">(<a href="#ref-lax1954parabolic" role="doc-biblioref">Lax and Milgram 1954</a>)</span>. <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;The original paper by Lax and Milgram didn’t actually use the term “coercive”; I wasn’t able to track down its first use. By the way, in Lax and Milgram’s work and in subsequent works on PDEs, coercivity is defined as a property of a bilinear form. This is equivalent to our definition since a matrix <span class="math inline">\(M\)</span> can be canonically associated to a bilinear form <span class="math inline">\(a: \mathbb{R}^d \times \mathbb{R}^d \to \mathbb{R}\)</span> by <span class="math inline">\(a(x, y) = x^\top M y\)</span>.</p></div></div><p>Lax and Milgram’s original motivation was to study the well-posedness of a linear PDE; let us be a bit more modest and study the behavior of the linear ODE <span class="math inline">\(\dot{x}_t = -M x_t\)</span>. Observe that <span class="math display">\[\frac{d}{dt} \|x_t\|^2 = 2 x_t^\top \dot{x}_t = -2 x_t^\top M x_t \leq -2\alpha \|x_t\|^2,\]</span> and so, by Gronwall’s lemma, <span class="math inline">\(\|x_t\|^2 \leq e^{-2\alpha t} \|x_0\|^2 \to 0\)</span> as <span class="math inline">\(t \to \infty\)</span>. This explains the choice of the term for this notion: the linear dynamical system associated to a coercive <span class="math inline">\(M\)</span> “coerces” <span class="math inline">\(x_t\)</span> into converging to <span class="math inline">\(0\)</span>.</p>
+<p>Note that we did not ask for <span class="math inline">\(M\)</span> to be symmetric! But also note that the definition of coercivity only involves the symmetric part of <span class="math inline">\(M\)</span>, since <span class="math inline">\(x^\top M x = x^\top \frac{M+M^\top}{2} x\)</span>. So, <span class="math inline">\(M\)</span> is coercive if and only if its symmetric part is coercive. In turn, coercivity for a symmetric matrix can be characterized in terms of its eigenvalues, thanks to the spectral theorem.</p>
+<p>This short discussion shows that coercivity has several characterizations, summarized in the next proposition. The proof is left as an exercise.</p>
+<div id="prp-coerc" class="proposition theorem">
+<p><span class="theorem-title"><strong>Proposition 1</strong></span> The following statements are equivalent for any <span class="math inline">\(\alpha&gt;0\)</span>:</p>
+<ol type="1">
+<li><p><span class="math inline">\(\forall x, x^\top M x \geq \alpha \|x\|^2\)</span>.</p></li>
+<li><p>For any <span class="math inline">\(x_0\)</span>, the ODE <span class="math inline">\(\dot{x}_t = -M x_t\)</span> satisfies <span class="math inline">\(\forall t, \|x_t\|^2 \leq e^{-2\alpha t} \|x_0\|^2\)</span>.</p></li>
+<li><p>The eigenvalues of the symmetric part of <span class="math inline">\(M\)</span> belong to <span class="math inline">\(\left\{ \lambda \in \mathbb{R}; \lambda \geq \alpha \right\}\)</span>.</p></li>
+</ol>
+</div>
+</section>
+<section id="hypocoercivity" class="level1 page-columns page-full">
+<h1>Hypocoercivity</h1>
+<p>Coercivity of <span class="math inline">\(M\)</span> is a sufficient condition for the linear dynamical system <span id="eq-dyn"><span class="math display">\[\dot{x}_t = -M x_t \tag{1}\]</span></span> to converge exponentially to <span class="math inline">\(0\)</span>, for any initialization <span class="math inline">\(x_0 \in \mathbb{R}^d\)</span>. But it is not a necessary condition. And indeed, there are many linear systems of interest in applied mathematics which converge to&nbsp;<span class="math inline">\(0\)</span> but which are not coercive. This motivates the definition:</p>
+<div id="def-hypocoercive" class="definition theorem">
+<p><span class="theorem-title"><strong>Definition 1</strong></span> We call a matrix <span class="math inline">\(M \in \mathbb{R}^{d \times d}\)</span> <em>hypocoercive</em> if the linear dynamical system (<a href="#eq-dyn" class="quarto-xref">Eq.&nbsp;1</a>) converges to <span class="math inline">\(0\)</span> exponentially, i.e., if there exists a constant <span class="math inline">\(\alpha&gt;0\)</span> such that <span class="math display">\[\exists C&lt;\infty, \forall x_0 \in \mathbb{R}^d, \|x_t\| \leq C e^{-\alpha t} \|x_0\|.\]</span></p>
+</div>
+<div id="rem-hypocoercive_history" class="proof remark page-columns page-full">
+<p><span class="proof-title"><em>Remark 1</em>. </span>The term “hypocoercive” was popularized in the 2006 memoir by Cédric Villani audaciously titled simply “Hypocoercivity”. <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> The existence of hypocoercive matrices which are not coercive was well-known before that, of course, even though there was no particular name for it, and this phenomenon was already more or less well-understood in finite dimension. Villani’s contributions were about studying the same phenomenon for linear PDEs. For this reason, googling “hypocoercivity” almost only returns works about PDEs.</p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Yes, this is the same Cédric Villani who also did amazing work on optimal transport. Yes, hypocoercivity and optimal transport are completely different topics.</p></div></div><p>To be clear, this blog post is only about hypocoercivity in finite dimension. This is because there are already a number of strange and fun things that can be said. Plus, there are some phenomena that occur in finite dimension which do not occur for PDEs, and vice-versa. (A third reason is that I don’t know nearly enough yet about hypocoercivity in PDEs to actually write about it.)</p>
+</div>
+<p>Here is a first example of a matrix which is hypocoercive but not coercive: in dimension <span class="math inline">\(d=2\)</span>, <span class="math inline">\(M = \begin{pmatrix}
+    0 &amp; -1 \\
+    1 &amp; \varepsilon
+\end{pmatrix}\)</span>, where <span class="math inline">\(0&lt;\varepsilon&lt;2\)</span>. <span class="math inline">\(M\)</span> is not coercive since its symmetric part has a zero eigenvalue. To prove that <span class="math inline">\(M\)</span> is hypocoercive, the brute-force solution is to diagonalize it in <span class="math inline">\(\mathbb{C}^2\)</span> and to decompose the ODE (<a href="#eq-dyn" class="quarto-xref">Eq.&nbsp;1</a>) in its eigenbasis: we have <span class="math display">\[M = P \begin{pmatrix}
+        \lambda_+ &amp; ~ \\
+        ~ &amp; \lambda_-
+    \end{pmatrix} P^{-1}
+    ~~~~\text{where}~~~~
+    \lambda_\pm = \frac{\varepsilon}{2} + i \sqrt{1 - \frac{\varepsilon^2}{2}}\]</span> for some invertible <span class="math inline">\(P \in \mathbb{C}^{2 \times 2}\)</span>. So we can rewrite (<a href="#eq-dyn" class="quarto-xref">Eq.&nbsp;1</a>) as <span class="math display">\[P^{-1} \dot{x}_t = -\begin{pmatrix}
+        \lambda_+ &amp; ~ \\
+        ~ &amp; \lambda_-
+    \end{pmatrix} P^{-1} x_t,
+    ~~~~\text{so}~~
+    \frac{d}{dt} \| P^{-1} x_t \|^2 \leq -\varepsilon\| P^{-1} x_t \|^2\]</span> and so <span class="math inline">\(\|x_t\| \leq \| P \|_{\mathrm{op}} \| P^{-1} x_t \| \leq e^{-\varepsilon t/2} \| P \|_{\mathrm{op}} \| P^{-1} x_0 \| \leq e^{-\varepsilon t/2} \| P \|_{\mathrm{op}} \| P^{-1} \|_{\mathrm{op}} \|x_0\|\)</span>.</p>
+<p>Using the same brute-force method as in this example, one can show the following characterization in terms of <span class="math inline">\(M\)</span>’s eigenvalues. <a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> This is a very well-known result, and the quantity <span class="math inline">\(\alpha(M)\)</span> is also called the spectral abscissa of <span class="math inline">\(-M\)</span>.</p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;In order to complete the proof, one needs to deal with the case where <span class="math inline">\(M\)</span> is not diagonalizable. This can be done, for example, thanks to the nifty construction in <a href="https://math.stackexchange.com/q/3834891">this MSE post</a> (“Matrix norm and spectral radius”) based on the Jordan normal form.</p></div></div><div id="prp-spectral_abscissa" class="proposition theorem">
+<p><span class="theorem-title"><strong>Proposition 2</strong></span> <span class="math inline">\(M\)</span> is hypocoercive, with a constant <span class="math inline">\(\alpha\)</span>, if and only if all of its eigenvalues belong to <span class="math inline">\(\left\{ \lambda \in \mathbb{C}; \Re(\lambda) \geq \alpha \right\}\)</span>.</p>
+<p>Accordingly, the optimal hypocoercivity constant of <span class="math inline">\(M\)</span> is <span class="math display">\[\alpha(M) = \min_{\lambda \in \mathrm{Sp}(M)} \Re(\lambda),\]</span> where <span class="math inline">\(\mathrm{Sp}(M)\)</span> denotes the set of eigenvalues.</p>
+</div>
+<section id="an-example-with-a-non-psd-symmetric-part." class="level4">
+<h4 class="anchored" data-anchor-id="an-example-with-a-non-psd-symmetric-part.">An example with a non-PSD symmetric part.</h4>
+<p>Starting from the next section, we will be considering matrices <span class="math inline">\(M \in \mathbb{R}^{d \times d}\)</span> for which we know <em>a priori</em> that the symmetric part is positive-semi-definite. This is not a sufficient condition for hypocoercivity, as shown by the example <span class="math inline">\(M=\begin{pmatrix}
+    0 &amp; -1 \\
+    1 &amp; \varepsilon
+\end{pmatrix}\)</span>. It turns out that it is not a necessary condition either: consider for example <span class="math display">\[M = \begin{pmatrix}
+        0 &amp; -1 \\
+        \lambda &amp; \varepsilon
+    \end{pmatrix},~~~~
+    \text{so}~~
+    2S \coloneqq M+M^\top
+    = \begin{pmatrix}
+        0 &amp; \lambda-1 \\
+        \lambda-1 &amp; 2\varepsilon
+    \end{pmatrix}\]</span> for any <span class="math inline">\(0&lt;\lambda\neq 1\)</span> and <span class="math inline">\(\varepsilon= 2\sqrt{\lambda}\)</span>. One can show, by diagonalizing it, that <span class="math inline">\(M\)</span> is hypocoercive. On the other hand the determinant of <span class="math inline">\(S\)</span> is <span class="math inline">\(-\frac{1}{4} (\lambda-1)^2 &lt; 0\)</span>, so <span class="math inline">\(S\)</span> is not positive-semi-definite.</p>
+<div id="fig" class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="hypo_nonPSD_1.png" class="img-fluid figure-img"></p>
+<figcaption><span class="math inline">\(\lambda = 0.6\)</span> and <span class="math inline">\(\varepsilon = 0.4\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="hypo_nonPSD_2.png" class="img-fluid figure-img"></p>
+<figcaption><span class="math inline">\(\lambda = 0.04\)</span> and <span class="math inline">\(\varepsilon = 0.4 = 2\sqrt{\lambda}\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="the-case-with-a-psd-symmetric-part" class="level1 page-columns page-full">
+<h1>The case with a PSD symmetric part</h1>
+<p>For the rest of this blog post, let us consider a matrix <span class="math inline">\(M \in \mathbb{R}^{d \times d}\)</span> for which we know <em>a priori</em> that the symmetric part <span class="math inline">\(S \coloneqq \frac{M+M^\top}{2}\)</span> is positive-semi-definite (PSD), i.e., <span class="math inline">\(\mathrm{Sp}(S) \subset \mathbb{R}_+\)</span>. This is a pretty natural assumption, considering that coercivity of <span class="math inline">\(M\)</span> implies <span class="math inline">\(S\)</span> is positive-definite, and it is satisfied for all of the concrete examples I know of in optimization.</p>
+<p>Under what additional conditions is <span class="math inline">\(M\)</span> hypocoercive? The following result is well-known in control theory; the condition <span class="math inline">\((ii)\)</span> is called Kawashima’s non-degeneracy condition. <a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn4"><p><sup>4</sup>&nbsp;As a disclaimer, I don’t know much about control theory; the claim that <a href="#prp-equiv" class="quarto-xref">Proposition&nbsp;3</a> is classical is repeated from <span class="citation" data-cites="achleitner2022hypocoercivity">(<a href="#ref-achleitner2022hypocoercivity" role="doc-biblioref">Achleitner et al. 2022</a>)</span>, and the claim that the condition <span class="math inline">\((ii)\)</span> is called Kawashima’s condition is repeated from <span class="citation" data-cites="villani2009hypocoercivity">(<a href="#ref-villani2009hypocoercivity" role="doc-biblioref">Villani 2009</a> Remark&nbsp;17)</span>.</p></div></div><div id="prp-equiv" class="proposition theorem">
+<p><span class="theorem-title"><strong>Proposition 3</strong></span> Let <span class="math inline">\(M = S + A \in \mathbb{R}^{d \times d}\)</span>, with <span class="math inline">\(S\)</span> symmetric and <span class="math inline">\(A\)</span> antisymmetric. Suppose <span class="math inline">\(S\)</span> is positive-semi-definite. Then the following conditions are equivalent:</p>
+<ol type="1">
+<li><p><span class="math inline">\(M\)</span> is hypocoercive.</p></li>
+<li><p>No eigenvector of <span class="math inline">\(A\)</span> lies in the kernel of <span class="math inline">\(S\)</span>.</p></li>
+<li><p>There exists <span class="math inline">\(N \in \mathbb{N}\)</span> such that <span class="math inline">\(\bigcap_{n \leq N} \mathop{\mathrm{Ker}}(S A^n) = \{0\}\)</span>.</p></li>
+</ol>
+</div>
+<p>A short proof of <span class="math inline">\((i) \iff (ii)\)</span> can be found in <span class="citation" data-cites="wang2023local">(<a href="#ref-wang2023local" role="doc-biblioref">Wang and Chizat 2023</a>)</span>. For <span class="math inline">\((i) \iff (iii)\)</span>, unfortunately I don’t know of a short self-contained source, and the proof that I know is a bit long. I included a proof sketch in the foootnotes. <a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;Here is a proof sketch for the equivalence <span class="math inline">\((i) \iff (iii)\)</span> of <a href="#prp-equiv" class="quarto-xref">Proposition&nbsp;3</a>. One can show by induction that <span class="math inline">\(\mathcal{K}_N \coloneqq \bigcap_{n \leq N} \mathop{\mathrm{Ker}}(S A^n)\)</span> <span class="math inline">\(= \bigcap_{n \leq N+1} \mathop{\mathrm{Ker}}(M^n - A^n).\)</span> One can also show that <span class="math inline">\(\mathcal{K}_\infty \coloneqq \bigcap_n \mathop{\mathrm{Ker}}(M^n - A^n)\)</span> <span class="math inline">\(= \bigcap_{t \in \mathbb{R}} \mathop{\mathrm{Ker}}(e^{-tM} - e^{-tA})\)</span> <span class="math inline">\(= \mathrm{span}\big( \mathop{\mathrm{Ker}}(S) \cap \mathrm{Eigvecs}(A) \big)\)</span> where <span class="math inline">\(\mathrm{Eigvecs}(A)\)</span> is the set of all eigenvectors of <span class="math inline">\(A\)</span> and <span class="math inline">\(\mathrm{span}(\cdot)\)</span> denotes the linear span (for the second equality, consider the decomposition of <span class="math inline">\(x \in \mathcal{K}_\infty\)</span> in the unitary eigenbasis of <span class="math inline">\(A\)</span>). To conclude, note that <span class="math inline">\((\dim \mathcal{K}_N)_{N \in \mathbb{N}}\)</span> is finite, integer, non-increasing, and so there exists <span class="math inline">\(N\)</span> such that <span class="math inline">\(\mathcal{K}_N = \mathcal{K}_\infty\)</span>.</p></div></div><p>For some intuition on Kawashima’s condition <span class="math inline">\((ii)\)</span>, consider the example <span class="math inline">\(S = \begin{pmatrix}
+    1 &amp; 0 \\
+    0 &amp; 0
+\end{pmatrix}\)</span>, <span class="math inline">\(%   ~~~~
+A = \begin{pmatrix}
+    0 &amp; 1 \\
+    -1 &amp; 0
+\end{pmatrix},\)</span> and let us think about the convergence of the dynamical system <span class="math inline">\(\dot{x}_t = -(S+A) x_t\)</span>. It can be seen as a combination of</p>
+<ul>
+<li><p>the system <span class="math inline">\(\dot{x}_t = -S x_t
+%   \iff
+%   \begin{pmatrix}
+%       \dot{x}_t[1] \\
+%       \dot{x}_t[2]
+%   \end{pmatrix}
+%   = \begin{pmatrix}
+%       0 \\
+%       -x_t[2]
+%   \end{pmatrix}
+    \iff
+    \begin{pmatrix}
+        x_t[1] \\
+        x_t[2]
+    \end{pmatrix}
+    = \begin{pmatrix}
+        e^{-t} x_0[1] \\
+        ~~~x_0[2]
+    \end{pmatrix}\)</span>, which converges to kernel of <span class="math inline">\(S\)</span> which is the <span class="math inline">\(y\)</span>-axis, and</p></li>
+<li><p>the system <span class="math inline">\(\dot{x}_t = -A x_t\)</span> whose solution is given by <span class="math inline">\(z_t = e^{-it} z_0\)</span> where <span class="math inline">\(z_t = x_t[1] + i x_t[2]\)</span>—in other words, the system simply rotates around the origin.</p></li>
+</ul>
+<p>So for the full dynamical system <span class="math inline">\(\dot{x}_t = -(S+A) x_t\)</span>, the <span class="math inline">\(S\)</span> term forces <span class="math inline">\(x_t\)</span> towards the <span class="math inline">\(y\)</span>-axis, and the <span class="math inline">\(A\)</span> term forces <span class="math inline">\(x_t\)</span> to “keep moving” even if it already lies on the <span class="math inline">\(y\)</span>-axis—unless it is precisely at <span class="math inline">\(0\)</span>.</p>
+<p>More generally in higher dimensions, the system <span class="math inline">\(\dot{x}_t = -A x_t\)</span> rotates around the origin <em>along each eigenplane of <span class="math inline">\(A\)</span> orthonormally</em>. Under Kawashima’s non-degeneracy condition, the same phenomenon as in the example above will occur: the <span class="math inline">\(A\)</span> term will prevent the system from staying put at some <span class="math inline">\(x \in \mathop{\mathrm{Ker}}S \setminus \{0\}\)</span>. The only way that this can fail is if there is an eigenplane of <span class="math inline">\(A\)</span> which is contained in <span class="math inline">\(\mathop{\mathrm{Ker}}S\)</span>; in this case the system will just rotate indefinitely within that subspace, without going to <span class="math inline">\(0\)</span>.</p>
+<div id="fig">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="kawashima_manual.png" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Kawashima’s condition for <span class="math inline">\(M = \begin{pmatrix}
+    0.5 &amp; 1 \\
+    -1 &amp; 0
+\end{pmatrix}\)</span></figcaption>
+</figure>
+</div>
+</div>
+<p>As for the condition <span class="math inline">\((iii)\)</span>... I honestly have no intuition about it.</p>
+<div id="rem-how_big" class="proof remark">
+<p><span class="proof-title"><em>Remark 2</em>. </span>The set of hypocoercive matrices contains the set of coercive matrices, by definition. How much bigger is it?</p>
+<ul>
+<li><p>The set of coercive matrices can be described as <span class="math inline">\(\mathop{\mathrm{Sym}}^{++}_n \oplus \mathrm{Antisym}_n\)</span>, where <span class="math inline">\(\mathop{\mathrm{Sym}}^{++}_n\)</span> is the set of positive-definite matrices and <span class="math inline">\(\mathrm{Antisym}_n\)</span> the set of antisymmetric matrices.</p></li>
+<li><p>The set of hypocoercive matrices “almost” contains <span class="math inline">\(\mathop{\mathrm{Sym}}^{+}_n \oplus \mathrm{Antisym}_n\)</span>, where <span class="math inline">\(\mathop{\mathrm{Sym}}^+_n\)</span> is the set of PSD matrices. Indeed, for a fixed <span class="math inline">\(S \in \mathop{\mathrm{Sym}}^+_n\)</span>, Kawashima’s condition is satisfied for <em>almost every</em> <span class="math inline">\(A \in \mathrm{Antisym}_n\)</span>.</p>
+<p>On top of that, the set of hypocoercive matrices also contains some matrices with a non-PSD symmetric part.</p></li>
+</ul>
+</div>
+<section id="how-to-get-a-convergence-rate" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-get-a-convergence-rate">How to get a convergence rate?</h2>
+<p>Suppose we’re interested in a dynamical system which can be modeled as a linear ODE of the form <span class="math inline">\(\dot{x}_t = -M x_t\)</span>. Furthermore, suppose we know that <span class="math inline">\(M\)</span> is hypocoercive and has a PSD symmetric part, and we would like know <em>how fast</em> this linear system converges to <span class="math inline">\(0\)</span>. (We will see concrete examples of such settings in the next blog post.)</p>
+<p>Given the characterization in <a href="#prp-spectral_abscissa" class="quarto-xref">Proposition&nbsp;2</a>, we know that the convergence is exponential: <span class="math inline">\(\|x_t\| = O(e^{-\alpha(M) t})\)</span>, and that the rate is given by <span class="math inline">\(\alpha(M) = \min_{\lambda \in \mathrm{Sp}(M)} \Re(\lambda)\)</span>. So the question is really: how can we estimate this quantity, as a function of problem parameters? This question is setting-dependent, of course, since it depends on what we mean by “problem parameters”.</p>
+<p>As a curiosity, here is a very general estimate, based on quantifying Kawashima’s condition.</p>
+<div id="prp" class="proposition">
+<p>Let <span class="math inline">\(M=S+A\)</span> satisfying the conditions of <a href="#prp-equiv" class="quarto-xref">Proposition&nbsp;3</a>. Denote by <span class="math inline">\(\mathrm{Eigvecs}(A)\)</span> the set of all eigenvectors of <span class="math inline">\(A\)</span>, and <span class="math inline">\(\mathop{\mathrm{dist}}(U, V) = \inf_{u \in U, z \in V} \| u-z \|\)</span> for any sets <span class="math inline">\(U, V \subset \mathbb{C}^d\)</span>. If <span class="math inline">\(A \neq 0\)</span>, then <span class="math display">\[
+    \alpha(M) \geq
+    \left( \frac{1}{\sqrt{\sigma_{\min}(S)}} + \frac{2 \sqrt{2 \sigma_{\max}(S)}}{\min\limits_{i\mu \neq i\mu' \in \mathrm{Sp}(A)} \| \mu-\mu' \|} \right)^{-2}
+    \mathop{\mathrm{dist}}\left( \mathop{\mathrm{Ker}}S, \mathrm{Eigvecs}(A) \cap \mathbb{S}\right)^2.
+\]</span> <!-- $$\begin{aligned}
+    \alpha(M)
+    % \min_{\lambda \in \mathrm{Sp}(M)} \Re(\lambda)
+%       &\geq
+%       \inf_{\norm{z}=1}
+%       \max\left\{
+%       \olz^\top S z,~
+%       \frac{1}{\sigma_{\max}(S)}
+%       % \norm{(I-z \olz^\top) A z}^2
+%       \norm{Az - (\olz^\top A z) z}^2
+%       \right\} \\
+    &\geq
+    \left( \frac{1}{\sqrt{\sigma_{\min}(S)}} + \frac{2 \sqrt{2 \sigma_{\max}(S)}}{\min_{i\mu \neq i\mu' \in \mathrm{Sp}(A)} \| \mu-\mu' \|} \right)^{-2}
+    \cdot
+    \mathop{\mathrm{dist}}\left( \mathop{\mathrm{Ker}}S, \mathrm{Eigvecs}(A) \cap \mathbb{S}\right)^2.
+\end{aligned}$$ --></p>
+</div>
+<p>Some remarks on this bound:</p>
+<ul>
+<li><p>Note that <span class="math inline">\(\min\limits_{i\mu \neq i\mu' \in \mathrm{Sp}(A)} \| \mu-\mu' \| \neq 0\)</span> provided that <span class="math inline">\(A \neq 0\)</span>. Indeed <span class="math inline">\(A\)</span> is real so its eigenvalues come in conjugate pairs, so that quantity is zero if and only if <span class="math inline">\(\mathrm{Sp}(A) = \{0\}\)</span>, or equivalently <span class="math inline">\(A=0\)</span> since <span class="math inline">\(A\)</span> is antisymmetric so diagonalizable. Also note that the case <span class="math inline">\(A=0\)</span> is not very interesting, since hypocoercivity then reduces to coercivity.</p></li>
+<li><p>The quantities that appear in the bound are quite natural. In the first factor, <span class="math inline">\(\sigma_{\min}(S)\)</span> and <span class="math inline">\(\sigma_{\max}(S)\)</span> and <span class="math inline">\(\min\limits_{i\mu \neq i\mu' \in \mathrm{Sp}(A)} \| \mu-\mu' \|\)</span> represent the spectral properties of the symmetric resp.&nbsp;antisymmetric parts, while the second factor quantifies the separation between <span class="math inline">\(\mathrm{Eigvecs}(A)\)</span> and <span class="math inline">\(\mathop{\mathrm{Ker}}S\)</span>, as expected from Kawashima’s condition. The first factor scales linearly with <span class="math inline">\(M\)</span>, while the second factor lies in <span class="math inline">\([0, 1]\)</span> and is invariant to rescaling, so it can be interpreted as a kind of inverse condition number.</p>
+<p>Note however that both factors are discontinuous functions of <span class="math inline">\(A\)</span>, and we expect their product to be discontinuous as well—contrary to the left-hand side.</p></li>
+</ul>
+<p>I don’t think the quantities appearing in this bound would count as “problem parameters” in any concrete settings, so to me, this proposition is really just a curiosity. I included a proof <a href="apx.pdf">here</a>.</p>
+</section>
+</section>
+<section id="whats-next" class="level1">
+<h1>What’s next</h1>
+<p>In the next blog post, I will describe three settings, in machine learning theory, where exhibit hypocoercive behavior: gradient descent-ascent for min-max optimization, accelerated gradient flows, and the underdamped Langevin dynamics. In each of these settings, I will explain how to get convergence rates.</p>
+<section id="acknowledgments." class="level4">
+<h4 class="anchored" data-anchor-id="acknowledgments.">Acknowledgments.</h4>
+<p>I would like to thank Haoze He for interesting discussions about linear algebra with non-symmetric matrices.</p>
+
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-achleitner2022hypocoercivity" class="csl-entry" role="listitem">
+Achleitner, Franz, Anton Arnold, and Volker Mehrmann. 2022. <span>“Hypocoercivity and Hypocontractivity Concepts for Linear Dynamical Systems.”</span> <em>arXiv Preprint arXiv:2204.13033</em>.
+</div>
+<div id="ref-lax1954parabolic" class="csl-entry" role="listitem">
+Lax, P. D, and A. N Milgram. 1954. <span>“Parabolic Equations.”</span> In <em>Contributions to the Theory of Partial Differential Equations</em>, vol. 33. Princeton University Press.
+</div>
+<div id="ref-villani2009hypocoercivity" class="csl-entry" role="listitem">
+Villani, Cédric. 2009. <em>Hypocoercivity</em>. Vol. 202. American Mathematical Society.
+</div>
+<div id="ref-wang2023local" class="csl-entry" role="listitem">
+Wang, Guillaume, and Lénaïc Chizat. 2023. <span>“Local Convergence of Gradient Methods for Min-Max Games: Partial Curvature Generically Suffices.”</span> <em>Advances in Neural Information Processing Systems</em> 36.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/guillaumew16\.github\.io\/quarto-blog\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
