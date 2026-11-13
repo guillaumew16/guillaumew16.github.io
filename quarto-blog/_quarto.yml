@@ -4,7 +4,7 @@ project:
 
 
 website:
-  title: "guillaumew16's blog"
+  title: "Guillaume Wang's blog"
   site-url: https://guillaumew16.github.io/quarto-blog/ ### TODO: change this to just /blog/
   navbar:
     right:
@@ -16,4 +16,6 @@ format:
     html-math-method: mathjax
     theme: cosmo
     css: /styles.css
+    toc: true
+    toc-location: left
     

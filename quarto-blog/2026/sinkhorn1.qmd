@@ -1,0 +1,632 @@
+---
+title: "A convex optimization introduction to the Sinkhorn algorithm (1/4)"
+author: Guillaume Wang
+date: "2026-11-13"
+# date-modified: "2026-11-13"
+categories: [math]
+toc: true
+toc-location: left
+from: markdown-smart
+number-sections: true
+number-depth: 3
+reference-location: margin
+crossref:
+    eq-prefix: "Eq."
+abstract:
+    "A convex optimization introduction to the Sinkhorn algorithm (1/4): the variational problem"
+format:
+    html:
+        body-classes: sinkhorn-post
+        include-in-header:
+            text: |
+                <style>
+                /* Keep long derivations scrollable; inherit the project's /styles.css. */
+                .sinkhorn-post .math.display { display: block; overflow-x: auto; padding: .2em 0; }
+                .sinkhorn-post .eot-equation { scroll-margin-top: 5rem; }
+                /* Match styles.css's remark panel while retaining the source's label. */
+                .sinkhorn-post .sinkhorn-remark { border-left: 4px solid #b0b0b0; background: #f5f5f560; padding: 1em; margin: 1em 0; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+                </style>
+---
+
+::: bigquote
+*I am resuming this blog! This comes after two eventful years (particularly the last two months, and particularly the last two weeks) where I graduated from my PhD, started a postdoc in New York, and found myself caught up in the storm that AI for math has become. If you’re reading this in the future and don’t see what I’m referring to, I imagine a quick look at this post’s publication date (November 2026) and a quick Google search about Navier-Stokes should give you the context.*
+
+I certainly have more to say about AI and math, and I may or may not be working on a blog post related to that. But for now, here is a long overdue blog post series on a topic I’ve been thinking about for the last 18 months: the Sinkhorn algorithm. As usual, the idea is for me to write the blog post I wish I had at my disposal, when I started thinking about the topic.
+:::
+
+This blog post series is about understanding and analyzing the Sinkhorn algorithm, which is a standard numerical method for a certain type of entropy-penalized linear program, called the entropic optimal transport (EOT) problem. Due to the special structure of the EOT problem, Sinkhorn turns out to have a multitude of equivalent formulations, and indeed it was rediscovered several times in different areas of mathematics: you may also have heard of it under the names RAS method or Iterative Proportional Fitting Procedure. These equivalent formulations naturally lead to several different approaches to implementing the Sinkhorn updates, to measuring the convergence, and to analyzing the algorithm. This means there is a wealth of possible angles of attack, but on the flip side, this also makes entering and navigating the literature on Sinkhorn a bit complicated.
+
+My goal with this series of posts is to explain in full detail one particular approach to Sinkhorn, which is the one that I’ve found most helpful personally and that I’ve been using in my research: the convex optimization perspective.
+
+I believe this perspective resonated with me precisely because I had prior exposure to ideas and intuitions from optimization theory. So I’m calibrating these posts’ presentation to make them maximally useful for readers who also have some affinity with this topic—while still keeping things relatively accessible. Whether you’re currently learning about convex optimization, or you’re already an expert and you would like to see how those ideas play out in the context of EOT, these blog posts should be suitable for you.[^1] Specifically, I’ll assume familiarity with
+
+-   the basic framework of mathematical programming, i.e., using iterative algorithms to numerically solve optimization problems,
+-   Lagrangian duality/convex duality,
+-   the convergence analysis of gradient descent for convex and smooth objectives, and
+-   (optionally) Bregman divergences and mirror descent.
+
+I should also mention right away that, within the convex optimization perspective, there are still several natural formulations both for the EOT problem (we will see five: two primal, two dual, and one semi-dual) and for the Sinkhorn algorithm (we will see three: alternating Bregman projections, alternating dual maximization, and mirror descent). The upshot is that, by keeping a convex optimization mindset, it will be relatively easy to work out precisely the relations between them.
+
+So the situation here is rather different from the usual one in optimization theory, where we assume given an abstract minimization objective and we study the properties of a given algorithm (say, gradient descent) in full generality. Instead, here we only use what we know from convex optimization as a guide to understand an algorithm which exists and matters in its own right.[^2]
+
+**Organization.** As with any mathematical programming setting, there are three types of questions we may want to clarify, and one should keep in mind that they really are asking about three distinct notions.
+
+1.  Questions about the variational problem: what is the optimization problem that we are trying to solve? Are there other equivalent formulations? What does the set of solutions look like (is it a singleton, or a linear space, or a convex set...)? What are the different ways to measure the quality of an approximate solution, and what relations exist between them (sub-optimality in objective function value, or norm of the gradient of the objective, or distance to the set of minimizers...)?
+
+2.  Questions about the algorithm: what is the algorithm that we are studying, mathematically speaking? Does it have other equivalent formulations? How to implement it in practice? Does it belong to a more general class of algorithms, for a broader class of problems? How does it compare with other possible algorithms for the same task, in practice (does it always perform worse, or always better, or does it depend on the situation, and if so on what exactly)?
+
+3.  Analyzing the algorithm: can we theoretically prove that the sequence of iterates converges to a solution (qualitative convergence)? Can we derive quantitative bounds on the speed of the convergence, in terms of the suboptimality metrics determined in 1. (global convergence rates)? The behavior of the iterates can often be described quite finely once they get close enough to the solution; is it the case here, and how do they behave (local convergence behavior)?
+
+This blog post is split into three parts, one for each of the above types of questions. I also include a fourth part where I briefly discuss the main other perspective on Sinkhorn, based on matrix scaling, as well as gather miscellaneous remarks and bibliographic references, so as to accurately represent the whole mathematical “context” of the topic.
+
+In this first part, we present the EOT problem and its convexity and invariance properties. Then we catalog, in a principled way, all of its equivalent formulations that may appear in the literature, and we point out all of the subtle formal differences that they entail.
+
+# “The” primal and dual EOT problems
+
+Given two probability vectors $\mu = (\mu_1, ..., \mu_m)$ and $\nu = (\nu_1, ..., \nu_n)$ (“the source and target distributions”), a matrix $C \in \mathbb{R}^{m \times n}$ (“the transport cost matrix”), and a regularization parameter $\tau>0$, the primal EOT problem is the constrained convex minimization
+
+$$\min_{\pi \in \mathbb{R}_+^{m \times n}}~
+    \sum_{i=1}^m \sum_{j=1}^n C_{ij} \pi_{ij} 
+    + \tau \sum_{i=1}^m \sum_{j=1}^n \pi_{ij} \log \frac{\pi_{ij}}{\mu_i \nu_j}
+    \qquad \text{subject to} \qquad
+    \begin{cases}
+        \forall i \leq m,~ \sum_{j=1}^n \pi_{ij} = \mu_i \\
+        \forall j \leq n,~ \sum_{i=1}^m \pi_{ij} = \nu_j.
+    \end{cases}$$
+
+We will assume throughout that $\mu_i>0$ and $\nu_j>0$ for all $i, j$, since the second term wouldn’t be well-defined otherwise.
+
+To lighten the notations, introduce the shorthand $\left\langle a, b \right\rangle = \sum_I a_I b_I$ for the inner product of any vectors or matrices $a, b$ of the same size, define
+
+$$\forall \pi \in \mathbb{R}_+^{m \times n},~
+    H_{\mu \otimes \nu}(\pi) 
+    = \sum_{ij} \pi_{ij} \log \frac{\pi_{ij}}{\mu_i \nu_j}
+    - \pi_{ij} + \mu_i \nu_j$$
+
+called the relative entropy of $\pi$ w.r.t. $\mu \otimes \nu$, and denote by ${\boldsymbol{1}}_m, {\boldsymbol{1}}_n$ the vectors with all components equal to one of size $m$ resp. $n$. Then the problem rewrites
+
+::: {#eot-primal .eot-equation}
+$$\min_{\pi \in \mathbb{R}_+^{m \times n}}~
+    \left\langle C, \pi \right\rangle + \tau H_{\mu\otimes \nu}(\pi)
+    \qquad \text{subject to} \qquad
+    \begin{cases}
+        \pi {\boldsymbol{1}}_n = \mu \\
+        \pi^\top {\boldsymbol{1}}_m = \nu.
+    \end{cases}
+\tag{P}\label{eq:1:primal_pb}$$
+:::
+
+This is our definition of the primal EOT problem that we will keep throughout this blog post series.
+
+Note that the objective function in [(P)](#eot-primal) may appear to have some extra terms compared to the preceding display. To resolve this discrepancy, simply observe that for any feasible $\pi$, it holds $\sum_{ij} \pi_{ij} = \sum_i \left( \sum_j \pi_{ij} \right) = \sum_i \mu_i = 1$, and so
+
+$$H_{\mu\otimes\nu}(\pi) = \sum_{ij} \pi_{ij} \log \frac{\pi_{ij}}{\mu_i\nu_j} - \left( \sum_{ij} \pi_{ij} \right) + \left( \sum_i \mu_i \, \sum_j \nu_j \right)
+    = \sum_{ij} \pi_{ij} \log \frac{\pi_{ij}}{\mu_i\nu_j}.$$
+
+**Motivation and interpretation.** In elementary mathematical programming terms, this problem is just a particular linear program, but with an added entropy term $\tau H_{\mu \otimes \nu}$ which makes it strictly convex. Quite a lot is known—and has been known for a long time—about such problems in general.[^3] But what makes this particular problem interesting is the special structure of its constraints. To get some intuition on them, let’s recall their interpretation in terms of *optimal transport*, the field where this problem originates.
+
+In optimal transport terms, $\mu$ and $\nu$ represent probability distributions on the finite spaces $\mathcal{I}= \{1, \dots, m\}$ and $\mathcal{J}= \{1, \dots, n\}$ respectively, and any $\pi \in \mathbb{R}_+^{m \times n}$ such that $\sum_{ij} \pi_{ij} = 1$ represents a joint probability distribution on the product space $\mathcal{I}\times \mathcal{J}$. Then, the constraint that $\pi {\boldsymbol{1}}_n = \mu$, i.e., $\forall i, \sum_{j=1}^n \pi_{ij} = \mu_i$, precisely expresses that the first marginal of $\pi$ must be equal to $\mu$. Likewise, the second constraint expresses that the second marginal of $\pi$ must equal $\nu$.
+
+The feasible $\pi$’s for [(P)](#eot-primal) are thus precisely the joint distributions on $\mathcal{I}\times \mathcal{J}$ whose first and second marginals are $\mu$ and $\nu$ respectively. In optimal transport jargon, these are called the *admissible transport plans* from $\mu$ to $\nu$. The idea is that each $\mu_i$ might represent the production capacity of a factory at a location $x_i$, and each $\nu_j$ the amount of demand of a town at location $y_j$ (and we suppose we are in a situation where the total supply and demand are equal: $\sum_i \mu_i = \sum_j \nu_j$, and we can renormalize things so that they are equal to $1$). Then a transport plan $\pi$ is a valid way of prescribing the amount of goods that should be transported from $x_i$ to $y_j$ for each $i,j$, such that all of the production gets distributed ($\forall i, \sum_j \pi_{ij} = \mu_i$) and all of the demand gets met ($\forall j, \sum_i \pi_{ij} = \nu_j$).
+
+As for the objective function, we may interpret the entries $C_{ij}$ of $C$ as the cost of transporting one unit of goods from $x_i$ to $y_j$, so the linear term $\sum_{ij} C_{ij} \pi_{ij}$ represents the total cost of the transport operation. The additional entropy term $\tau H_{\mu\otimes \nu}$ is added for algorithmic regularization purposes.[^4]
+
+**Properties of the (relative) entropy.** The relative entropy function $H_{\mu \otimes \nu}$, or more generally the relative entropy between any two probability distributions $(\pi_I)_I, (\gamma_I)_I$ on the same finite space: $H_\gamma(\pi) = \sum_I \pi_I \log \frac{\pi_I}{\gamma_I}$, is a classical concept in information theory. It also turns out to play an important role in constrained optimization over the standard simplex, because it is strictly convex and it can act as a “barrier” function: it satisfies $H_\gamma(\pi) \to \infty$ when $\pi$ approaches the boundary of the simplex, i.e., when one of its entries tends to zero.
+
+In particular, we can note that the objective function of [(P)](#eot-primal) assigns a value of $+\infty$ to any $\pi \in \mathbb{R}_+^{m \times n}$ that has a zero entry, no matter how small the entropy-regularization parameter $\tau$ is. In other words, the entropy term encourages “well-spreaded-ness” of the transport plan in a rather strong way.
+
+For the most part, we assume the reader already has some familiarity with the concept of relative entropy, though this is not strictly required. The unfamiliar reader should still be able to follow along, it’s just that some of the steps may appear a bit magical or miraculous.
+
+## Derivation of “the” dual problem and the KKT conditions
+
+We can derive the Lagrangian dual of the primal EOT problem [(P)](#eot-primal) as follows. These computations are classical, so we present them directly without additional comments, but you should feel free to take as much time as needed to ponder each step. The following variational problems are equivalent:[^5]
+
+$$\begin{aligned}
+    & \min_{\pi \in \mathbb{R}_+^{m \times n}}~
+    \left\langle C, \pi \right\rangle
+    + \tau H_{\mu\otimes \nu}(\pi) 
+    \qquad \text{subject to} \qquad
+    \begin{cases}
+        \pi {\boldsymbol{1}}_n = \mu \\
+        \pi^\top {\boldsymbol{1}}_m = \nu
+    \end{cases} \\
+    \iff & \min_{\pi \in \mathbb{R}_+^{m \times n}}~
+    \left\langle C, \pi \right\rangle
+    + \tau H_{\mu\otimes \nu}(\pi) 
+    + \max_{f \in \mathbb{R}^m, g \in \mathbb{R}^n}~
+    \left\langle f, \mu - \pi{\boldsymbol{1}}_n \right\rangle
+    + \left\langle g, \nu - \pi^\top {\boldsymbol{1}}_n \right\rangle \\
+    \iff & \min_{\pi \in \mathbb{R}_+^{m \times n}}~
+    \max_{f \in \mathbb{R}^m, g \in \mathbb{R}^n}~
+    \left\langle C, \pi \right\rangle
+    + \tau H_{\mu\otimes \nu}(\pi) 
+    + \left\langle f, \mu \right\rangle
+    + \left\langle g, \nu \right\rangle
+    - \sum_i f_i \left( \sum_j \pi_{ij} \right)
+    - \sum_j g_j \left( \sum_i \pi_{ij} \right) \\
+    \iff & 
+    \max_{f \in \mathbb{R}^m, g \in \mathbb{R}^n}~
+    \min_{\pi \in \mathbb{R}_+^{m \times n}}~
+    \left\langle C, \pi \right\rangle
+    + \tau H_{\mu\otimes \nu}(\pi) 
+    + \left\langle f, \mu \right\rangle
+    + \left\langle g, \nu \right\rangle
+    - \sum_{ij} \pi_{ij} (f_i + g_j) \\
+    \iff & \max_{f \in \mathbb{R}^m, g \in \mathbb{R}^n}~
+    \left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle
+    + ~\min_{\pi \in \mathbb{R}_+^{m \times n}}~
+    \sum_{ij} \pi_{ij} (C_{ij} - f_i - g_j) + \tau H_{\mu\otimes \nu}(\pi) \\
+    \iff & \max_{f \in \mathbb{R}^m, g \in \mathbb{R}^n}~
+    \left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle
+    - \left[ 
+        \max_{\pi \in \mathbb{R}_+^{m \times n}}~
+        \sum_{ij} \pi_{ij} (-C_{ij} + f_i + g_j) - \tau H_{\mu\otimes \nu}(\pi)
+    \right].
+\end{aligned}$$
+
+Now the bracketed term is precisely equal to the convex conjugate of $\tau H_{\mu\otimes\nu}$ evaluated at the matrix $(-C_{ij} + f_i + g_j)_{ij}$. We can compute it explicitly: for any fixed $f$ and $g$, the max inside the bracket is attained at $\pi$ characterized by
+
+$$\begin{aligned}
+    \forall i,j,~~
+    -C_{ij} + f_i + g_j 
+    &= \tau \frac{\partial H_{\mu\otimes \nu}(\pi)}{\partial \pi_{ij}} 
+    = \tau \frac{\partial}{\partial \pi_{ij}} \left( \sum_{i'j'} \pi_{i'j'} \log \frac{\pi_{i'j'}}{\mu_{i'} \nu_{j'}} - \pi_{i'j'} + \mu_{i'} \nu_{j'} \right)
+    = \tau \log \frac{\pi_{ij}}{\mu_i \nu_j}, \\
+    \text{i.e.,}~~
+    \pi_{ij} 
+    &= \mu_i \nu_j~ e^{\frac1\tau \left[ -C_{ij} + f_i + g_j \right]}.
+\end{aligned}$$
+
+Consequently, the bracketed term is equal to, explicitly,
+
+$$\max_{\pi \in \mathbb{R}_+^{m \times n}}
+    \sum_{ij} \pi_{ij} (-C_{ij} + f_i + g_j) 
+    - \tau \left(
+        \sum_{ij} \pi_{ij} \log \frac{\pi_{ij}}{\mu_i \nu_j}
+        - \pi_{ij}
+        + \mu_i \nu_j
+    \right)
+    = \tau \sum_{ij} \mu_i \nu_j \left( e^{\frac1\tau \left[ -C_{ij} + f_i + g_j \right]} - 1 \right).$$
+
+Stated more concisely, equivalently, this computation shows that
+
+$$\begin{aligned}
+    \nabla \left( \tau H_{\mu\otimes\nu} \right)^*(-C + f {\boldsymbol{1}}_n^\top + {\boldsymbol{1}}_m g^\top)
+    &= \left( \mu_i \nu_j ~ e^{\frac1\tau \left[ -C_{ij} + f_i + g_j \right]} \right)_{ij} \\
+    \text{and} \qquad
+    \left( \tau H_{\mu\otimes\nu} \right)^*(-C + f {\boldsymbol{1}}_n^\top + {\boldsymbol{1}}_m g^\top)
+    &= \tau \sum_{ij} \mu_i \nu_j \left( e^{\frac1\tau \left[ -C_{ij} + f_i + g_j \right]} - 1 \right).
+\end{aligned}$$
+
+Thus, the Lagrangian dual of [(P)](#eot-primal) is the unconstrained maximization
+
+::: {#eot-dual .eot-equation}
+$$\max_{f \in \mathbb{R}^m, g \in \mathbb{R}^n}~
+    -\tau \sum_{ij} \mu_i \nu_j \left( e^{\frac1\tau \left[ -C_{ij} + f_i + g_j \right]} - 1 \right)
+    + \left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle.
+\tag{D}\label{eq:1:dual_pb}$$
+:::
+
+This is the problem we will refer to as the dual EOT problem throughout the blog post series. Examining the above derivation also shows that the KKT stationarity condition is
+
+::: {#eot-kkt .eot-equation}
+$$\pi = \nabla \left( \tau H_{\mu\otimes\nu} \right)^*(-C + f {\boldsymbol{1}}_n^\top + {\boldsymbol{1}}_m g^\top)
+    = \left( \mu_i \nu_j ~ e^{\frac1\tau \left[ -C_{ij} + f_i + g_j \right]} \right)_{ij}.
+\tag{1}\label{eq:1:KKT}$$
+:::
+
+That is,
+
+-   $\pi \in \mathbb{R}_+^{m \times n}$ is an optimal solution for [(P)](#eot-primal) if and only if it is primal-feasible and it is of the form [(1)](#eot-kkt) for some $f, g$—which are then automatically optimal for the dual problem.
+
+-   $(f, g) \in \mathbb{R}^m \times \mathbb{R}^n$ is an optimal solution for [(D)](#eot-dual) if and only if the corresponding $\pi$, given by [(1)](#eot-kkt), is primal-feasible—and this $\pi$ is then automatically optimal for the primal problem.
+
+## One-dimensional gauge invariance of the dual ([D](#eot-dual)) {#one-dimensional-gauge-invariance-of-the-dual-eq1dual_pb}
+
+In the spirit of making EOT and Sinkhorn as unconfusing as possible, let’s point out right away a slight subtlety with the dual EOT problem. Contrary to the primal problem, technically the dual problem [(D)](#eot-dual) is not strictly convex. In fact its objective function is constant along any set of the form $\left\{ (f + c {\boldsymbol{1}}_m, g - c {\boldsymbol{1}}_n),~ c \in \mathbb{R}\right\}$, as you can easily check.
+
+But this is in some sense the only obstacle to strict convexity. One way to see this is to notice that the objective only depends on $(f,g)$ through the matrix $(f_i + g_j)_{ij}$—indeed, the last two terms can be rewritten as $\left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle
+= \sum_{ij} (f_i + g_j) \mu_i \nu_j$—and that the objective is strictly convex as a function of $(f_i + g_j)_{ij}$. In particular, the solution set of [(D)](#eot-dual) is an affine set of dimension one: it can be written as $\left\{ (f^*, g^*) + c ({\boldsymbol{1}}_m, -{\boldsymbol{1}}_n),~ c \in \mathbb{R}\right\}$ for any optimal dual solution $(f^*, g^*)$.
+
+This subtlety can make rigorous proof-writing a bit annoying, so some authors prefer to artificially add a constraint in the dual problem, to make it strictly convex. This is sometimes referred to as fixing the gauge.[^6]
+
+# “The other” primal and dual EOT problems
+
+*(Reading this section is not necessary to read the next blog posts in this series.)*
+
+**The other primal.** Recall our definition of the primal EOT problem [(P)](#eot-primal): $\min_{\pi \in \mathbb{R}_+^{m \times n}} \left\langle C, \pi \right\rangle + \tau H_{\mu \otimes \nu}(\pi)$ subject to $\pi {\boldsymbol{1}}_n = \mu$ and $\pi^\top {\boldsymbol{1}}_m = \nu$. Also recall our remark that for any feasible $\pi$, it automatically holds $\sum_{ij} \pi_{ij} = {\boldsymbol{1}}_m^\top \pi {\boldsymbol{1}}_n = 1$. In other words, introducing a notation for the probability simplex in dimension $m \times n$:
+
+$$\Delta_{m \times n} = \left\{ \pi \in \mathbb{R}_+^{m \times n};~ \sum_{ij} \pi_{ij} = 1 \right\},$$
+
+the primal EOT problem is equivalent to
+
+::: {#eot-other-primal .eot-equation}
+$$\min_{\pi \in \Delta_{m \times n}}~
+    \left\langle C, \pi \right\rangle + \tau H_{\mu\otimes\nu}(\pi)
+    \qquad \text{subject to} \qquad
+    \begin{cases}
+        \pi {\boldsymbol{1}}_n = \mu \\
+        \pi^\top {\boldsymbol{1}}_m = \nu.
+    \end{cases}
+\tag{P'}\label{eq:1:other_primal_pb}$$
+:::
+
+The only difference with [(P)](#eot-primal) is that we explicitly constrain $\pi$ to $\Delta_{m \times n}$.
+
+**The other dual.** At the level of the primal, this modification barely changes anything, but it turns out to lead to a different formulation for the dual. Indeed, by performing the same Lagrangian dual derivation as in the previous section, but with $\mathbb{R}_+^{m \times n}$ replaced by $\Delta_{m \times n}$ everywhere, we obtain
+
+$$\begin{aligned}
+    & \min_{\pi \in \Delta_{m \times n}}~
+    \left\langle C, \pi \right\rangle
+    + \tau H_{\mu\otimes \nu}(\pi) 
+    \qquad \text{subject to} \qquad
+    \begin{cases}
+        \pi {\boldsymbol{1}}_n = \mu \\
+        \pi^\top {\boldsymbol{1}}_m = \nu
+    \end{cases} \\
+    \iff & \max_{f \in \mathbb{R}^m, g \in \mathbb{R}^n}~
+    \left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle
+    - \left[ 
+        \max_{\pi \in \Delta_{m \times n}}~
+        \sum_{ij} \pi_{ij} (-C_{ij} + f_i + g_j) - \tau H_{\mu\otimes \nu}(\pi)
+    \right].
+\end{aligned}$$
+
+Note that the bracketed term is different from before. Formally, we can say it is the convex conjugate of $\tau H_{\mu \otimes \nu} + \iota_{\Delta_{m \times n}}$, where $\iota_{\Delta_{m \times n}}(\pi) = \begin{cases}
+    0 ~\text{if}~ \pi \in \Delta_{m \times n} \\
+    +\infty ~\text{otherwise}.
+\end{cases}$
+
+We can again compute the bracketed term explicitly: by introducing a scalar Langrangian multipler $\lambda$ for the constraint $\sum_{ij} \pi_{ij} = 1$, we find that for any fixed $f, g$, the max is attained at $\pi$ such that
+
+$$\begin{aligned}
+    \exists \lambda \in \mathbb{R},~~
+    \forall i,j,~~
+    -C_{ij} + f_i + g_j
+    &= \tau \frac{\partial H_{\mu\otimes \nu}(\pi)}{\partial \pi_{ij}} 
+    + \lambda 
+    = \tau \log \frac{\pi_{ij}}{\mu_i \nu_j} 
+    + \lambda \\
+    \text{i.e.,}~~
+    \pi_{ij} &= \mu_i \nu_j ~ e^{\frac1\tau [-C_{ij} + f_i + g_j]} \cdot e^{-\lambda/\tau}.
+\end{aligned}$$
+
+Substituting this expression back into the constraint, we obtain $\sum_{ij} \mu_i \nu_j ~ e^{\frac1\tau [-C_{ij} + f_i + g_j]} \cdot e^{-\lambda/\tau} = 1$, i.e., $e^{\lambda/\tau} = \sum_{ij} \mu_i \nu_j ~ e^{\frac1\tau [-C_{ij} + f_i + g_j]}$. So the max is attained uniquely at
+
+$$\pi = \left( \frac1Z~ \mu_i \nu_j ~ e^{\frac1\tau [-C_{ij} + f_i + g_j]} \right)_{ij}
+    \qquad \text{where} \qquad
+    Z = \sum_{i'j'} \mu_{i'} \nu_{j'} ~ e^{\frac1\tau [-C_{i'j'} + f_{i'} + g_{j'}]}.$$
+
+Thus the bracketed term is equal to
+
+$$\begin{aligned}
+    & \max_{\pi \in \Delta_{m \times n}}~
+    \sum_{ij} \pi_{ij} (-C_{ij} + f_i + g_j) 
+    - \tau
+    \sum_{ij} \pi_{ij} \log \frac{\pi_{ij}}{\mu_i \nu_j} \\
+    &= \sum_{ij} \pi_{ij} \left( -C_{ij} + f_i + g_j - \tau \log \left( \frac1Z ~ e^{\frac1\tau [-C_{ij} + f_i + g_j]} \right) \right) \\
+    &= \tau \log Z
+    = \tau \log \sum_{ij} \mu_i \nu_j~ e^{\frac1\tau [-C_{ij} + f_i + g_j]}
+\end{aligned}$$
+
+(where in the second line “$\pi$” refers to the optimal one).
+
+Hence, the convex dual of [(P’)](#eot-other-primal) is
+
+::: {#eot-other-dual .eot-equation}
+$$\max_{f \in \mathbb{R}^m, g \in \mathbb{R}^n}~
+    \left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle
+    - \tau \log \sum_{ij} \mu_i \nu_j~ e^{\frac1\tau [-C_{ij} + f_i + g_j]}.
+\tag{D'}\label{eq:1:other_dual_pb}$$
+:::
+
+This looks decidedly different, though similar, to the dual EOT problem [(D)](#eot-dual) that we derived in the last section: it was $\max_{f,g}
+\left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle
+- \tau \sum_{ij} \mu_i \nu_j~ \left( e^{\frac1\tau [-C_{ij} + f_i + g_j]} - 1 \right)$.
+
+As one could expect, the KKT stationarity condition for the primal/dual pair [(P’)](#eot-other-primal) and [(D’)](#eot-other-dual) is given by the relation we found above, namely
+
+$$\pi = \nabla \left( \tau H_{\mu\otimes\nu} + \iota_{\Delta_{m \times n}} \right)^*(-C + f {\boldsymbol{1}}_n^\top + {\boldsymbol{1}}_m g^\top)
+    = \left( 
+        \frac{
+            \mu_i \nu_j ~ e^{\frac1\tau \left[ -C_{ij} + f_i + g_j \right]}
+        }{
+            \sum_{i'j'} \mu_{i'} \nu_{j'} ~ e^{\frac1\tau \left[ -C_{i'j'} + f_{i'} + g_{j'} \right]}
+        } 
+    \right)_{ij}.$$
+
+::: sinkhorn-remark
+**Remark 1.** The same kind of situation, where we can end up with two different dual problems depending on whether we include the constraint $\pi \in \Delta_{m \times n}$ explicitly or not, also arises for the (unregularized) optimal transport problem. There, the primal problem is [(P)](#eot-primal) or [(P’)](#eot-other-primal) with $\tau=0$. The analog of [(D)](#eot-dual) is $\max_{f,g} \left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle$ subject to $\forall i,j,~ f_i + g_j \leq C_{ij}$. The analog of [(D’)](#eot-other-dual) is $\max_{f,g} \left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle - \max_{ij} (f_i + g_j - C_{ij})$.
+
+For some reason, in almost all textbooks on optimal transport that I know, the notion of dual problem that gets used is the former one, and the latter one doesn’t even get mentioned. [^7] This is in contrast to the literature on the entropy-regularized case, where both [(D)](#eot-dual) and [(D’)](#eot-other-dual) are used depending on the author.
+:::
+
+**Which dual formulation should one use?** Both problems [(D)](#eot-dual) and [(D’)](#eot-other-dual) can correctly be called a dual to the EOT problem. They have the same optimal value, and any optimal solution for one of them automatically yields an optimal solution for the primal, and hence for the other. So, imagine that you’re preparing a classroom presentation or a research talk on Sinkhorn: naturally, you should pick one of the formulations and stick to it; there’s no benefit to using both, it would just confuse the audience. Which one should you choose?
+
+Well, there’s really no clear answer. For what it’s worth, it seems the formulation [(D)](#eot-dual) (the first one that we introduced, and the one that we’ll stick to for the future blog posts in this series) is a bit more common in the literature.[^8]
+
+At some point, I had convinced myself that the second formulation was “superior” to the first, because its objective function is always larger:
+
+$$\forall f,g,~
+    \left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle
+    - \tau \log \sum_{ij} \mu_i \nu_j~ e^{\frac1\tau [-C_{ij} + f_i + g_j]}
+    \geq
+    \left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle
+    - \tau \sum_{ij} \mu_i \nu_j \left( e^{\frac1\tau [-C_{ij} + f_i + g_j]} - 1 \right).$$
+
+(You can check that this follows from the elementary inequality $\log(x) \leq x-1$.) So for the purpose of developing primal-dual algorithms, for example, it would always give a better lower bound on the optimal value, and a better bound on the duality gap. But this fact doesn’t seem to matter much in practice, because all of the algorithms for EOT that I know preserve the invariant $\sum_{ij} \mu_i \nu_j~ e^{\frac1\tau [-C_{ij} + f^k_i + g^k_j]} = 1$, and so the two dual objective functions actually coincide at the iterates $(f^k, g^k)$.
+
+## Two-dimensional gauge invariance of the “other” dual ([D’](#eot-other-dual)) {#two-dimensional-gauge-invariance-of-the-other-dual-eq1other_dual_pb}
+
+We saw that the objective function of [(D)](#eot-dual) is invariant to transformations of the form $(f, g) \leftrightarrow (f+c {\boldsymbol{1}}_m, g-c {\boldsymbol{1}}_n)$, for any $c \in \mathbb{R}$. The objective function of [(D’)](#eot-other-dual) satisfies the same property, but we have even more: it is invariant to transformations $(f, g) \leftrightarrow (f+c {\boldsymbol{1}}_m, g+c' {\boldsymbol{1}}_n)$, for all $c, c' \in \mathbb{R}$, as you can check for yourself.
+
+Accordingly, by reasoning carefully about the KKT conditions of both formulations, one can also show that for any fixed $(f^*, g^*) \in \operatorname*{argmin}\eqref{eq:1:dual_pb}$, we have
+
+$$\operatorname*{argmin}\eqref{eq:1:other_dual_pb} = \left\{ (f^* + c {\boldsymbol{1}}_m, g^* + c' {\boldsymbol{1}}_n),~~ 
+    c, c' \in \mathbb{R}\right\},$$
+
+a two-dimensional affine set.
+
+# The semi-dual EOT problem
+
+*(Reading this section is not essential to read the next blog posts in this series. We will only need the notions presented in this section for a subpart of part 2, when discussing the mirror descent interpretation of Sinkhorn.)*
+
+Let’s go back to the dual problem [(D)](#eot-dual): $\max_{f, g} -\tau \sum_{ij} \mu_i \nu_j \left( e^{\frac1\tau [-C_{ij} + f_i + g_j]} -1 \right) + \left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle$. A remarkably nice fact about it is that, for any fixed $g$, the argmax w.r.t. $f$ can be computed in closed form. Indeed, setting the gradient of the objective w.r.t. $f$ to zero yields
+
+$$\begin{aligned}
+    \forall i,\qquad &
+    \frac{\partial}{\partial f_i} \left( 
+        -\tau \sum_{ij} \mu_i \nu_j \left( e^{\frac1\tau [-C_{ij} + f_i + g_j]} -1 \right) + \left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle
+    \right) = 0\\
+    \iff &~~
+    -\sum_j \mu_i \nu_j~ e^{\frac1\tau [-C_{ij} + f_i + g_j]} 
+    + \mu_i = 0 \\
+    \iff &~~
+    e^{\frac1\tau f_i} \sum_j \nu_j~ e^{\frac1\tau [-C_{ij} + g_j]} 
+    = 1 \\
+    \iff &~~
+    f_i = -\tau \log \sum_j \nu_j~ e^{\frac1\tau [-C_{ij} + g_j]}.
+\end{aligned}$$
+
+So, substituting this expression back into the dual problem, we find that we can equivalently rewrite it as
+
+::: {#eot-semidual .eot-equation}
+$$\begin{aligned}
+    \eqref{eq:1:dual_pb}
+    &\iff \max_{g \in \mathbb{R}^n} \left[ \max_{f \in \mathbb{R}^m} -\tau \sum_{ij} \mu_i \nu_j \left( e^{\frac1\tau [-C_{ij} + f_i + g_j]} -1 \right) + \left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle \right] \\
+    &\iff \max_{g \in \mathbb{R}^n} 
+    \left[ 0 + \sum_i \mu_i \left( -\tau \log \sum_j \nu_j~ e^{\frac1\tau [-C_{ij} + g_j]} \right) + \left\langle g, \nu \right\rangle \right] \\
+    &\iff \max_{g \in \mathbb{R}^n}~
+    -\tau \sum_i \mu_i\, \log \sum_j \nu_j ~ e^{\frac1\tau [-C_{ij} + g_j]} + \left\langle g, \nu \right\rangle.
+\end{aligned}
+\tag{SD}\label{eq:1:semidual_pb}$$
+:::
+
+This last optimization problem is known as the semi-dual EOT problem.
+
+We could do the same reasoning starting from the “other” dual problem [(D’)](#eot-other-dual) instead, but this turns out to lead to the exact same semi-dual problem. You can check this yourself by similar explicit computations.
+
+The fact that the EOT problem can be formulated as the single-variable unconstrained maximization [(SD)](#eot-semidual) is interesting for optimization purposes, as we will see. But it’s also very useful in the context of optimal transport theory, specifically for studying the “stability” of optimal transport. For completeness, let us briefly explain the crucial role that it plays there.
+
+**Relation to stability of EOT w.r.t. the target distribution.** Consider the following functional, which quantifies the variation of the EOT optimal value if we perturb the target distribution $\nu$ in the second constraint:
+
+$$\forall s \in \mathbb{R}^n,~~
+    E(s) = \min_{\pi \in \mathbb{R}_+^{m \times n}}~
+    \left\langle C, \pi \right\rangle + \tau H_{\mu\otimes \nu}(\pi)
+    \qquad \text{subject to} \qquad
+    \begin{cases}
+        \pi {\boldsymbol{1}}_n = \mu \\
+        \pi^\top {\boldsymbol{1}}_m = \nu + s.
+    \end{cases}$$
+
+For the $s$’s such that $\nu+s$ is not a probability vector, there is no feasible $\pi$, so by convention we set $E(s) = \infty$. (Note that we only perturb $\nu$ in the constraint, and we keep $H_{\mu\otimes\nu}(\pi)$ in the objective.)
+
+It turns out that, up to a sign flip, the objective function of [(D)](#eot-dual) is precisely the convex conjugate of $E$. Indeed, by the same Lagrangian dual derivation as before, we can express $E(s)$ for any $s$ as
+
+$$\begin{aligned}
+    E(s) &= \min_{\pi \in \mathbb{R}_+^{m \times n}}~
+    \left\langle C, \pi \right\rangle + \tau H_{\mu\otimes \nu}(\pi)
+    \qquad \text{subject to} \qquad
+    \begin{cases}
+        \pi {\boldsymbol{1}}_n = \mu \\
+        \pi^\top {\boldsymbol{1}}_m = \nu + s
+    \end{cases} \\
+    &= \min_{\pi \in \mathbb{R}_+^{m \times n}}~
+    \max_{f \in \mathbb{R}^m, g \in \mathbb{R}^n}~
+    \sum_{ij} \pi_{ij} (-C_{ij} + f_i + g_j) - \tau H_{\mu\otimes \nu}(\pi) 
+    + \left\langle f, \mu \right\rangle + \left\langle g, \nu + s \right\rangle \\
+    &= \max_{f \in \mathbb{R}^m, g \in \mathbb{R}^n}~
+    -\tau \sum_{ij} \mu_i \nu_j \left( e^{\frac1\tau [-C_{ij} + f_i + g_j]} -1 \right) + \left\langle f, \mu \right\rangle + \left\langle g, \nu+s \right\rangle.
+\end{aligned}$$
+
+Isolating the term in $s$, we can further rewrite this as
+
+$$\begin{aligned}
+    E(s) &= ~\max_{g \in \mathbb{R}^n}~
+    \left\langle g, s \right\rangle
+    + \left[
+        \max_{f \in \mathbb{R}^m}~
+        -\tau \sum_{ij} \mu_i \nu_j \left( e^{\frac1\tau [-C_{ij} + f_i + g_j]} -1 \right) 
+        + \left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle
+    \right] \\
+    &= \max_{g \in \mathbb{R}^n} \left\langle g, s \right\rangle
+    + \left[
+        -\tau \sum_i \mu_i\, \log \sum_j \nu_j ~ e^{\frac1\tau [-C_{ij} + g_j]} + \left\langle g, \nu \right\rangle
+    \right].
+\end{aligned}$$
+
+This precisely expresses that the convex conjugate of $E$ is the negative of the bracketed term, i.e., the negative of the semi-dual objective.
+
+Actually, if you think about the way we derived the semi-dual objective in the first place, if you ponder hard enough, it is possible to see that this connection between $E(s)$ and [(SD)](#eot-semidual) is somehow obvious. Fundamentally, this is just a manifestation of the general fact that dual variables capture the “sensitivity” of the primal w.r.t. the corresponding constraints.
+
+Given this connection, it is perhaps not surprising that the semi-dual objective [(SD)](#eot-semidual) plays an important role in the study of stability of optimal transport. In this context, the first term in [(SD)](#eot-semidual) is sometimes called the entropic Kantorovich functional. For studying the stability of *(unregularized)* optimal transport, the relevant object is simply the one obtained by taking the formal limit $\tau \to 0$:
+
+$$\lim_{\tau \to 0}~
+    -\tau \sum_i \mu_i\, \log \sum_j \nu_j ~ e^{\frac1\tau [-C_{ij} + g_j]}
+    = \sum_i \mu_i \left[ \min_j\, C_{ij} - g_j \right],$$
+
+sometimes called the (unregularized) Kantorovich functional.[^9]
+
+# Invariance to shifts of the cost matrix
+
+We have finished our catalog of the different formulations of the EOT problem that appear in the literature. Before moving on, I would like to emphasize a feature of the problem that caused me quite a bit of confusion, at first.
+
+To explain it, let’s go back to the KKT conditions for the primal/dual pair [(P)](#eot-primal) and [(D)](#eot-dual). They show that the unique minimizer $\pi^*$ of [(P)](#eot-primal) can be characterized as the only distribution that simultaneously satisfies two conditions:
+
+-   (primal feasibility:) It satisfies the constraints $\pi^* {\boldsymbol{1}}_n = \mu$ and $\pi^{*\top} {\boldsymbol{1}}_m = \nu$, and
+
+-   (KKT stationarity:) It takes the form
+
+    $$\forall i,j,~ \pi^*_{ij} = \mu_i \nu_j ~ e^{\frac1\tau [-C_{ij} + f_i + g_j]},
+            \qquad \text{for some vectors}\qquad
+            f \in \mathbb{R}^m ~\text{and}~ g \in \mathbb{R}^n.$$
+
+Now, by examining the second condition more carefully, one can see that it can be simplified a bit: by a change of variables $f'_i = f_i - \tau \log \mu_i$ and $g'_j = g_j - \tau \log \nu_j$, we see it is equivalent to asking that
+
+$$\forall i,j,~ \pi^*_{ij} = e^{\frac1\tau [-C_{ij} + f_i + g_j]}
+    \qquad \text{for some vectors}\qquad
+    f \in \mathbb{R}^m ~\text{and}~ g \in \mathbb{R}^n.$$
+
+But more than this, if we consider any matrix $\widetilde{C}$ of the form $\widetilde{C}_{ij} = C_{ij} + \alpha_i + \beta_j$, for any $\alpha \in \mathbb{R}^m, \beta \in \mathbb{R}^n$, the second condition would also be equivalent to asking that
+
+$$\forall i,j,~ \pi^*_{ij} = e^{\frac1\tau [-\widetilde{C}_{ij} + f_i + g_j]}
+    \qquad \text{for some vectors}\qquad
+    f \in \mathbb{R}^m ~\text{and}~ g \in \mathbb{R}^n.$$
+
+Thus the EOT problem is, in some sense, invariant to “shifts” of the cost matrix of the form $C \leftrightarrow \widetilde{C}= C + \alpha {\boldsymbol{1}}_n^\top + {\boldsymbol{1}}_m \beta^\top$. To be precise and formal: if we denote by $\pi^*[\mu, \nu, C, \tau]$ the optimal solution of the EOT problem with source and target distributions $\mu, \nu$, cost matrix $C$, and regularization parameter $\tau$, we have
+
+$$\forall \widetilde{C}~\text{of the form}~ \widetilde{C}= C + \alpha {\boldsymbol{1}}_n^\top + {\boldsymbol{1}}_m \beta^\top, \quad
+    \pi^*[\mu, \nu, C, \tau] = \pi^*[\mu, \nu, \widetilde{C}, \tau].$$
+
+Incidentally, one can also check easily—again by inspecting the KKT stationarity condition—that
+
+$$\pi^*[\mu, \nu, C, \tau]
+    = \pi^*\left[ \mu, \nu, \frac C\tau, 1 \right].$$
+
+This invariance is also visible at the level of the dual problem. To see it easily, compare the dual objective function with problem parameters $\mu, \nu, C, \tau$:
+
+$$-\tau \sum_{ij} \mu_i \nu_j \left( e^{\frac1\tau [-C_{ij} + f_i + g_j]} -1 \right) + \left\langle f, \mu \right\rangle + \left\langle g, \nu \right\rangle,$$
+
+versus the dual objective with problem parameters $\mu, \nu, \widetilde{C}, \tau$ with $\widetilde{C}_{ij} = C_{ij} + \alpha_i + \beta_j$, with the change of variables $\tilde{f}_i = f_i + \alpha_i$, $\tilde{g}_j = g_j + \beta_j$:
+
+$$\begin{aligned}
+    & -\tau \sum_{ij} \mu_i \nu_j \left( e^{\frac1\tau [-\widetilde{C}_{ij} + \tilde{f}_i + \tilde{g}_j]} -1 \right) + \left\langle \tilde{f}, \mu \right\rangle + \left\langle \tilde{g}, \nu \right\rangle \\
+    =& -\tau \sum_{ij} \mu_i \nu_j \left( e^{\frac1\tau [-C_{ij} + f_i + g_j]} -1 \right) + \left\langle f + \alpha, \mu \right\rangle + \left\langle g + \beta, \nu \right\rangle.
+\end{aligned}$$
+
+Hence, up to a change of variables and an additive constant of $\left\langle \alpha, \mu \right\rangle + \left\langle \beta, \nu \right\rangle$, these two dual objectives are the same.
+
+## What this implies for optimization convergence analyses
+
+As we will see in the next blog posts, the quantity $\left\lVert C \right\rVert_\infty = \max_{ij} \left\lvert C_{ij} \right\rvert$ appears quite naturally in the analysis of the Sinkhorn algorithm. For instance, one of the convergence results we will show says that the $k$-th primal iterate $\pi^k$ satisfies $\left\lVert \pi^k - \pi^* \right\rVert_1^2 \leq O(\frac{\left\lVert C \right\rVert_\infty}{\tau k})$. This quantity also appears when analyzing algorithms for EOT other than Sinkhorn, though we won’t be discussing them at all in these blog posts (or at least not until part 4).
+
+But note that this quantity $\left\lVert C \right\rVert_\infty$ is *not* shift-invariant in the same way that the EOT problem is. So it is possible to improve our convergence bound for free, by running our algorithm on the problem with a modified cost matrix $\widetilde{C}= C + \alpha {\boldsymbol{1}}_n^\top + {\boldsymbol{1}}_m \beta^\top$ for well-chosen $\alpha$ and $\beta$. Namely, the best constant that one can obtain in this way is
+
+$$\min_{\alpha \in \mathbb{R}^m, \beta \in \mathbb{R}^n}
+    \left\lVert C + \alpha {\boldsymbol{1}}_n^\top + {\boldsymbol{1}}_m \beta^\top \right\rVert
+    = \min_{\alpha \in \mathbb{R}^m, \beta \in \mathbb{R}^n}
+    \max_{ij}
+    \left\lvert C_{ij} + \alpha_i + \beta_j \right\rvert,$$
+
+and this is shift-invariant by construction. This turns out to be equivalent, up to a constant factor, to the simpler expression
+
+$$\max_{i,j, i',j'} \left\lvert C_{ij} - C_{i'j} - C_{ij'} + C_{i'j'} \right\rvert,$$
+
+which is also shift-invariant. More precisely, the ratio of the two above displays always lies between $\frac14$ and $\frac12$. This fact doesn’t seem to be well-known in the literature on EOT, so I include a proof at the end of this section. The proof is elementary but a bit technical, so feel free to skip it.
+
+Actually, for the Sinkhorn algorithm, we can even say more: Sinkhorn itself is invariant to shifts of $C$. (This is somewhat specific to Sinkhorn.) So we can expect that its convergence behavior should only depend on $\max_{iji'j'} \left\lvert C_{ij} - C_{i'j} - C_{ij'} + C_{i'j'} \right\rvert$, rather than on the full $\left\lVert C \right\rVert_\infty = \max_{ij} \left\lvert C_{ij} \right\rvert$, which can be much larger in general. We will come back to this relatively subtle matter in part 3 when we discuss how to analyze Sinkhorn.
+
+**Proof of the equivalence of the two above displays.** Let
+
+$$S = \min_{\alpha \in \mathbb{R}^m, \beta \in \mathbb{R}^n}
+    \max_{ij}
+    \left\lvert C_{ij} + \alpha_i + \beta_j \right\rvert
+    \qquad\text{and}\qquad
+    T = \max_{iji'j'} \left\lvert C_{ij} - C_{i'j} - C_{ij'} + C_{i'j'} \right\rvert.$$
+
+Let us show that their ratio is upper and lower bounded by universal constants: $\frac14 \leq \frac{S}{T} \leq \frac12$.
+
+For the upper bound $S \leq \frac12 T$, it suffices to evaluate the min in the definition of $S$ at[^10]
+
+$$\forall i,~
+    \alpha_i = -\frac1n \sum_{j'=1}^n C_{ij'},
+    \qquad\qquad
+    \forall j,~
+    \beta_j = -\frac12 \left( \max_{i'} (C_{i'j} + \alpha_{i'}) + \min_{i'} (C_{i'j} + \alpha_{i'}) \right).$$
+
+Denoting $B_{ij} = C_{ij} + \alpha_i = C_{ij} - \frac1n \sum_{j'} C_{ij'}$, this yields the upper bound
+
+$$\begin{aligned}
+    S &\leq 
+    \max_{ij} \left\lvert B_{ij} - \frac 12 \left( \max_{i'} B_{i'j} + \min_{i'} B_{i'j} \right) \right\rvert \\
+    &= \max_j \left\lVert B_{\bullet j} - \frac 12 (\max B_{\bullet j} + \min B_{\bullet j}) \right\rVert_\infty \\
+    &= \max_j~ \frac12 (\max B_{\bullet j} - \min B_{\bullet j}) \\
+    &= \frac12 \max_j \max_{ii'}~ (B_{ij} - B_{i'j}).
+\end{aligned}$$
+
+Now for any $j, i, i'$,
+
+$$B_{ij} - B_{i'j} = C_{ij} - C_{i'j} - \frac1n \sum_{j'} (C_{ij'} - C_{i'j'})
+    \leq \frac1n \sum_{j'} (C_{ij} - C_{i'j} - C_{ij'} + C_{i'j'})
+        \leq T,$$
+
+hence $S \leq \frac12 T$.
+
+For the lower bound $\frac14 T \leq S$, let any $\alpha \in \mathbb{R}^m, \beta \in \mathbb{R}^n$ and denote $\widetilde{C}_{ij} = C_{ij} + \alpha_i + \beta_j$. Then for any $i,j$, we have $C_{ij} - C_{i'j} - C_{ij'} + C_{i'j'}
+= \widetilde{C}_{ij} - \widetilde{C}_{i'j} - \widetilde{C}_{ij'} + \widetilde{C}_{i'j'}$. Hence
+
+$$T = \max_{iji'j'} \left\lvert \widetilde{C}_{ij} - \widetilde{C}_{i'j} - \widetilde{C}_{ij'} + \widetilde{C}_{i'j'} \right\rvert
+    \leq 4 \max_{ij} \left\lvert \widetilde{C}_{ij} \right\rvert
+    = 4 \max_{ij} \left\lvert C_{ij} + \alpha_i + \beta_j \right\rvert.$$
+
+Since $\alpha$ and $\beta$ were arbitrary, taking an infimum over them yields $T \leq 4 S$, as desired.
+
+## Entropy vs. relative-entropy penalization
+
+Some authors define the EOT problem as
+
+$$\min_{\pi \in \mathbb{R}_+^{m \times n}}~
+    \left\langle C, \pi \right\rangle + \tau H(\pi)
+    \qquad \text{subject to} \qquad
+    \begin{cases}
+        \pi {\boldsymbol{1}}_n = \mu \\
+        \pi^\top {\boldsymbol{1}}_m = \nu.
+    \end{cases}$$
+
+where $H(\pi) = \sum_{ij} \pi_{ij} \log \pi_{ij}$. That is, they use the negative Shannon entropy $H$ as regularization term, instead of the relative entropy $H_{\mu\otimes\nu}$. This problem is equivalent to our [(P)](#eot-primal), because
+
+$$\begin{aligned}
+    \left\langle C, \pi \right\rangle + \tau H(\pi)
+    &= \sum_{ij} C_{ij} \pi_{ij}
+    + \tau \sum_{ij} \pi_{ij} \log \pi_{ij} \\
+    &= \sum_{ij} \left( C_{ij} + \tau \log (\mu_i \nu_j) \right)\, \pi_{ij}
+    + \tau \sum_{ij} \pi_{ij} \log \frac{\pi_{ij}}{\mu_i \nu_j} \\
+    &= \left\langle \widetilde{C}, \pi \right\rangle + \tau H_{\mu\otimes \nu}(\pi)
+\end{aligned}$$
+
+where $\widetilde{C}_{ij} = C_{ij} + \tau \log \mu_i + \tau \log \nu_j$.
+
+Our version [(P)](#eot-primal), with the relative entropy as regularization, seems to have become somewhat standard in the recent literature. Indeed it has the slight advantage that it generalizes better to continuous-space settings (see part 4 of this series). Admittedly this advantage is relatively minor when the focus is on optimization algorithms, but the Shannon-entropy-as-regularization variant really has no other advantage, hence my choice of convention for this blog post series.
+
+**What’s next.** This concludes our systematic presentation of the EOT problem, which is the variational problem that the Sinkhorn algorithm aims to solve. Next, in part 2, we present the Sinkhorn algorithm.
+
+
+[^1]: Another category of readers I’m anticipating are people primarily interested in optimal transport. I expect they already know about most of the stuff presented here. But the third part of this blog post, where I discuss the convergence behavior of Sinkhorn, may be of interest to them.
+
+[^2]: In this sense, the situation we face when analyzing Sinkhorn from the convex optimization perspective is similar to that of the conjugate gradient method. (I’m not saying these two algorithms have anything else in common, to be clear.)
+
+[^3]: See, e.g., Cominetti and San Martin and references therein.
+
+[^4]: In fact, besides algorithmic regularization, there are other good reasons why one might want to include the entropy term in the EOT problem. I’ll discuss them briefly in part 4 of this series.
+
+[^5]: Our choice of letters $f$ and $g$ to denote the Lagrangian multipliers of the EOT problem follows the usual convention in optimal transport. This choice comes from the idea that they can be viewed as real-valued functions over factory locations $\{x_i\}_{i \leq m}$ and town locations $\{y_j\}_{j \leq n}$ respectively (see the “Motivation and Interpretation” paragraph).
+
+[^6]: For example, the paper on linear convergence of multi-marginal Sinkhorn by Carlier, as well as the exposition paper by Nutz, use the constraint $\left\langle g, \nu \right\rangle = 0$.
+
+[^7]: A partial exception is Computational Optimal Transport book by Peyré and Cuturi, who mention the latter formulation in Remark 2.23.
+
+[^8]: Another advantage of using the formulation [(D)](#eot-dual) for the dual is that it’s the only one that generalizes well to the case of unbalanced optimal transport (see part 4 of this blog post series).
+
+[^9]: For a study of the entropic Kantorovich functional’s properties and their implications, see, e.g., Delalande’s single-author NeurIPS paper, or Chizat, Delalande, and Vaskevicius. For the unregularized analog, see, e.g., Delalande and Mérigot, 2023. Note that the sign conventions are variable from one paper to the other.
+
+[^10]: I actually didn’t know that it held $S \leq \frac12 T$ before writing this blog post, I thought $S \leq T$ was sharp. The sharper bound was obtained with a LLM, GPT-6.1 Sol.
