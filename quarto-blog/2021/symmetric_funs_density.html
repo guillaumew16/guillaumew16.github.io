@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Guillaume Wang">
+<meta name="dcterms.date" content="2021-07-25">
+
+<title>Symmetric tensor functions are dense in the space of permutation-invariant functions – Guillaume Wang’s blog</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-8d3ad9c781c51ccd60b292c95058b2c2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+/* Supplement the shared styles.css only for this migrated post. */
+.symmetric-density .math-statement::before { content: attr(data-label); font-weight: bold; }
+.symmetric-density .density-lemma, .symmetric-density .density-proof { padding: 1em; margin: 1em 0; border-left: 4px solid #aaa; border-radius: 4px; background: #f5f5f5; box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+.symmetric-density .density-lemma { border-left-color: #c9a227; background: #fffbe6; }
+.symmetric-density .density-proof::before { font-weight: normal; font-style: italic; }
+.symmetric-density .density-proof::after { content: "\25FC"; display: block; text-align: right; }
+</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="floating nav-fixed symmetric-density fullcontent quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Guillaume Wang’s blog</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://guillaumew16.github.io/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+            <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Section">
+    
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Symmetric tensor functions are dense in the space of permutation-invariant functions</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">math</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Guillaume Wang </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 25, 2021</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">September 26, 2024</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<blockquote class="blockquote">
+<p>I prepared this post a long while ago but only posted it here in July 2021. This is because I had written it in LaTeX and converting it to MD was not completely trivial. Since I had no incentive to post it, this small barrier was enough for me to procrastinate several months…</p>
+</blockquote>
+<p>During my Master’s thesis, I encountered several interesting technical points that were not directly related to the thesis topic, so that I left them hanging. Here I will talk about one of them, encountered while working on Volterra series. (I chose to jump directly into my main point without giving any context on Volterra series, as it is not necessary; for a clean introduction to these objects, see chapter 4 of my Master’s thesis <a href="https://guillaumew16.github.io/assets/pdf/Master_s_thesis_report-final.pdf">report</a>.)</p>
+<ul>
+<li><a href="#preliminaries">Preliminaries</a></li>
+<li><a href="#the-result-and-why-it-looks-surprising-to-me">The result and why it looks surprising to me</a></li>
+<li><a href="#brief-proof-of-the-result">Brief proof of the result</a></li>
+<li><a href="#is-the-result-interestinguseful">Is the result interesting/useful?</a></li>
+</ul>
+<section id="preliminaries" class="level3">
+<h3 class="anchored" data-anchor-id="preliminaries">Preliminaries</h3>
+<p><strong>Notations and shorthands</strong> Fix some integer <span class="math inline">\(n &gt; 0\)</span>.</p>
+<ul>
+<li><p>For a point <span class="math inline">\(\boldsymbol{t}= (t_1,...,t_n) \in \mathbb{R}^n\)</span> and a permutation <span class="math inline">\(\sigma \in \mathfrak{S}_n\)</span>, <span class="math inline">\(\boldsymbol{t}_\sigma\)</span> denotes <span class="math inline">\((t_{\sigma(1)},...,t_{\sigma(n)})\)</span>.</p></li>
+<li><p>Call a multivariate function <span class="math inline">\(g: \mathbb{R}^n \to \mathbb{R}\)</span> <em>permutation-invariant</em> if for any permutation <span class="math inline">\(\sigma\)</span>, it holds <span class="math inline">\(g(\boldsymbol{t}) = g(\boldsymbol{t}_\sigma)\)</span> for all <span class="math inline">\(\boldsymbol{t}\in \mathbb{R}^n\)</span>.</p></li>
+<li><p>For any function <span class="math inline">\(f: \mathbb{R}\to \mathbb{R}\)</span>, denote <span class="math inline">\(f^{\otimes n}: \left[ \mathbb{R}^n \to \mathbb{R}, \boldsymbol{t}\mapsto f(t_1)...f(t_n) \right]\)</span>. Call <span class="math inline">\(f^{\otimes n}\)</span> the associated <em>symmetric tensor function</em><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> – tensor because it is a product of single-variable functions, and symmetric because all of those single-variable functions are the same.</p></li>
+<li><p>For any multivariate function <span class="math inline">\(g: \mathbb{R}^n \to \mathbb{R}\)</span>, denote <span class="math inline">\(\mathop{\mathrm{Sym}}g: \left[ \mathbb{R}^n \to \mathbb{R}, \boldsymbol{t}\mapsto \frac{1}{n!} \sum_{\sigma \in \mathfrak{S}_n} g(\boldsymbol{t}_\sigma) \right]\)</span>.</p></li>
+</ul>
+<p>We will sometimes write physicist-style <span class="math inline">\(f(t)\)</span> to mean a function <span class="math inline">\(f: \mathbb{R}\to \mathbb{R}\)</span>, and similarly <span class="math inline">\(g(\boldsymbol{t})\)</span> instead of <span class="math inline">\(g: \mathbb{R}^n \to \mathbb{R}\)</span>.</p>
+<p><strong>Some function spaces</strong> Fix <span class="math inline">\(1 \leq p &lt; \infty\)</span> and <span class="math inline">\(q\)</span> its conjugate exponent, i.e., <span class="math inline">\(1/p+1/q=1\)</span>.</p>
+<ul>
+<li><p>Let <span class="math inline">\(L^p(\mathbb{R})\)</span> be the Banach space of <span class="math inline">\(L^p\)</span>-integrable functions over <span class="math inline">\(\mathbb{R}\)</span> (with the usual Lebesgue measure). Its dual space is <span class="math inline">\(L^q(\mathbb{R})\)</span>.</p></li>
+<li><p>Let <span class="math inline">\(C_0(\mathbb{R})\)</span> be the space of vanishing continuous functions over <span class="math inline">\(\mathbb{R}\)</span>. Its dual space is <span class="math inline">\(\mathcal{M}(\mathbb{R})\)</span>, the space of Radon measures.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p></li>
+<li><p>Similarly define <span class="math inline">\(L^p(\mathbb{R}^n)\)</span>, <span class="math inline">\(L^q(\mathbb{R}^n)\)</span>, <span class="math inline">\(C_0(\mathbb{R}^n)\)</span> spaces of multivariate functions with <span class="math inline">\(n\)</span> scalar variables.</p></li>
+<li><p>Denote <span class="math inline">\(L^p_{\mathop{\mathrm{Sym}}}(\mathbb{R}^n)\)</span>, <span class="math inline">\(L^q_{\mathop{\mathrm{Sym}}}(\mathbb{R}^n)\)</span>, <span class="math inline">\(C_{0 \mathop{\mathrm{Sym}}}(\mathbb{R}^n)\)</span> the respective (closed) subspaces consisting of permutation-invariant functions.</p></li>
+</ul>
+<p>Note that our shorthand <span class="math inline">\(\mathop{\mathrm{Sym}}\)</span> can be viewed as a projection operator from <span class="math inline">\(L^p(\mathbb{R}^n)\)</span> to <span class="math inline">\(L^p_{\mathop{\mathrm{Sym}}}(\mathbb{R}^n)\)</span>, and from <span class="math inline">\(C_0(\mathbb{R}^n)\)</span> to <span class="math inline">\(C_{0 \mathop{\mathrm{Sym}}}(\mathbb{R}^n)\)</span>.</p>
+</section>
+<section id="the-result-and-why-it-looks-surprising-to-me" class="level3">
+<h3 class="anchored" data-anchor-id="the-result-and-why-it-looks-surprising-to-me">The result and why it looks surprising to me</h3>
+<div class="proposition math-statement" data-label="Proposition (main result). ">
+<p>Let <span class="math inline">\(1 \leq p &lt; \infty\)</span>. The set <span class="math inline">\(\left\lbrace f^{\otimes n}(\boldsymbol{t}) ;~ f \in L^p(\mathbb{R}) \right\rbrace\)</span> has its linear span dense in <span class="math inline">\(L^p_{\mathop{\mathrm{Sym}}}(\mathbb{R}^n)\)</span>.</p>
+<p>The set <span class="math inline">\(\left\lbrace f^{\otimes n}(\boldsymbol{t}) ;~ f \in C_0(\mathbb{R}) \right\rbrace\)</span> has its linear span dense in <span class="math inline">\(C_{0 \mathop{\mathrm{Sym}}}(\mathbb{R}^n)\)</span>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+</div>
+<p>More explicitly: <em>any <span class="math inline">\(g(\boldsymbol{t}) \in C_{0 \mathop{\mathrm{Sym}}}(\mathbb{R}^n)\)</span> is arbitrarily-well uniformly approximated by finite sums of the form <span class="math inline">\(\sum_{i \leq m} f_i(t_1)...f_i(t_n)\)</span></em> (<span class="math inline">\(m &lt; \infty\)</span>, <span class="math inline">\(f_i \in C_0(\mathbb{R})\)</span>).</p>
+<p><strong>This is not Weierstrass with symmetrization</strong> As an obvious corollary, the proposition holds when <span class="math inline">\(\mathbb{R}\)</span> is replaced by a closed interval <span class="math inline">\(I \subset \mathbb{R}\)</span>. In this case the result looks like a straightforward consequence of the Weierstrass approximation theorem, but it is not. Consider the following valid reasoning:</p>
+<blockquote class="blockquote">
+<p>Fix a continuous function <span class="math inline">\(g(\boldsymbol{t})\)</span> over the compact <span class="math inline">\(I^n\)</span> and let <span class="math inline">\(\varepsilon&gt;0\)</span>. By the Weierstrass approximation theorem, there exists a polynomial <span class="math inline">\(P(\boldsymbol{t})\)</span> such that <span class="math inline">\(\left\lVert g-P \right\rVert := \sup_{I^n} \left\lvert g-P \right\rvert \leq \varepsilon\)</span>, and <span class="math inline">\(P(\boldsymbol{t})\)</span> can be written as <span class="math inline">\(P(\boldsymbol{t}) = \sum_{\alpha \in \mathbb{N}^n} a_\alpha \boldsymbol{t}^\alpha\)</span> (where there are only a finite number of nonzero coefficients <span class="math inline">\(a_\alpha\)</span> and the shorthand <span class="math inline">\(\boldsymbol{t}^\alpha\)</span> denotes <span class="math inline">\(t_1^{\alpha_1} ... t_n^{\alpha_n}\)</span>).</p>
+<p>If in addition <span class="math inline">\(g(\boldsymbol{t})\)</span> is permutation-invariant, then the lemma below shows that <span class="math inline">\(\mathop{\mathrm{Sym}}P(\boldsymbol{t})\)</span> is also an <span class="math inline">\(\varepsilon\)</span>-approximation of <span class="math inline">\(g(\boldsymbol{t})\)</span>, and it can be written as <span class="math inline">\(\mathop{\mathrm{Sym}}P(\boldsymbol{t}) = \sum_{\alpha \in \mathbb{N}^n} a_\alpha \mathop{\mathrm{Sym}}\boldsymbol{t}^\alpha = \sum_{\alpha \in \mathbb{N}^n} \sum_{\sigma \in \mathfrak{S}_n} \frac{a_\alpha}{n!} t_1^{\alpha_{\sigma(1)}} ... t_n^{\alpha_{\sigma(n)}}.\)</span></p>
+</blockquote>
+<p>This does not show that <span class="math inline">\(g(\boldsymbol{t})\)</span> can be approximated by a finite combination of symmetric tensor functions, as the reasoning may yield approximators such as <span class="math inline">\(t_1 t_2^3 + t_1^3 t_2\)</span> (if <span class="math inline">\(n=2\)</span>), which are not of the required form.</p>
+<div class="density-lemma math-statement" data-label="Lemma (the aforementioned lemma). ">
+<p>For any function <span class="math inline">\(g(\boldsymbol{t})\)</span> over <span class="math inline">\(\mathbb{R}^n\)</span> and any <span class="math inline">\(1 \leq p \leq \infty\)</span>, it holds: <span class="math inline">\(\left\lVert \mathop{\mathrm{Sym}}g \right\rVert_{L^p} \leq \left\lVert g \right\rVert_{L^p}\)</span>.</p>
+<p>For any permutation-invariant <span class="math inline">\(g(\boldsymbol{t})\)</span> and any function <span class="math inline">\(h(\boldsymbol{t})\)</span>, if <span class="math inline">\(\left\lVert g - h \right\rVert_{L^p} \leq \varepsilon\)</span>, then <span class="math inline">\(\left\lVert g - \mathop{\mathrm{Sym}}h \right\rVert_{L^p} \leq \varepsilon\)</span>.</p>
+</div>
+<div class="density-proof math-statement" data-label="Proof. ">
+<p>Let any function <span class="math inline">\(g(\boldsymbol{t})\)</span> over <span class="math inline">\(\mathbb{R}^n\)</span> and any <span class="math inline">\(1 \leq p \leq \infty\)</span>. By definition of the <span class="math inline">\(L^p\)</span> norm,</p>
+<p><span class="math display">\[
+\left\lVert \mathop{\mathrm{Sym}}g \right\rVert_{L^p} = \left\lVert  \frac{1}{n!} \sum_{\sigma \in \mathfrak{S}_n} g(\boldsymbol{t}_\sigma)  \right\rVert_{L^p}
+        \leq \frac{1}{n!} \sum_{\sigma \in \mathfrak{S}_n} \left\lVert g(\boldsymbol{t}_\sigma) \right\rVert_{L^p}
+        = \left\lVert g \right\rVert_{L^p}.
+\]</span></p>
+<p>Let any permutation-invariant function <span class="math inline">\(g(\boldsymbol{t})\)</span> and any function <span class="math inline">\(h(\boldsymbol{t})\)</span> such that <span class="math inline">\(\left\lVert g - h \right\rVert_{L^p} \leq \varepsilon\)</span>. Then</p>
+<p><span class="math inline">\(\left\lVert g - \mathop{\mathrm{Sym}}h \right\rVert_{L^p} = \left\lVert \mathop{\mathrm{Sym}}(g-h) \right\rVert_{L^p} \leq \left\lVert g-h \right\rVert_{L^p} \leq \varepsilon.\)</span></p>
+</div>
+<p><strong>An example of surprise</strong> In fact the case of permutation-invariant polynomials over a compact set is already surprising to me... In fact just the following example is already surprising to me:</p>
+<blockquote class="blockquote">
+<p>Consider the function <span class="math inline">\(g(\boldsymbol{t}) = t_1 + ... + t_n\)</span> over <span class="math inline">\([0,1]^n\)</span>. According to the proposition, there exist <span class="math inline">\(m&lt;\infty\)</span> and <span class="math inline">\(f_i(t) \in C([0,1])\)</span> (<span class="math inline">\(i \leq m\)</span>) such that <span class="math inline">\(g(\boldsymbol{t}) \approx \sum_{i \leq m} f_i(t_1)...f_i(t_n)\)</span>, in the sense of uniform approximation over <span class="math inline">\([0,1]^n\)</span>.</p>
+</blockquote>
+<p>I wonder what these <span class="math inline">\(f_i\)</span> could look like. Since they are continuous over <span class="math inline">\([0,1]\)</span>, according to the Weierstrass approximation theorem we may assume without loss of generality that each <span class="math inline">\(f_i\)</span> is polynomial. Then, developing the product <span class="math inline">\(f_i(t_1)...f_i(t_n)\)</span> would yield an a priori big polynomial, whereas directly using Weierstrass with symmetrization can yield simply <span class="math inline">\(t_1+...+t_n\)</span> itself.</p>
+</section>
+<section id="brief-proof-of-the-result" class="level3">
+<h3 class="anchored" data-anchor-id="brief-proof-of-the-result">Brief proof of the result</h3>
+<p>In this section we prove the <span class="math inline">\(L^p/L^q\)</span> (<span class="math inline">\(1 \leq p &lt; \infty\)</span>) part of the proposition; the <span class="math inline">\(C_0/\mathcal{M}\)</span> part can be proved by the same arguments, with minor modifications.</p>
+<p>I assume the reader is familiar with the basics of functional analysis and duality in Banach spaces. Recall the following density criterion, which is a consequence of the Hahn-Banach theorem (as are many things):</p>
+<div class="density-lemma math-statement" data-label="Lemma (density criterion). ">
+<p>Let <span class="math inline">\(E\)</span> be a Banach space and <span class="math inline">\(A\)</span> a subset. <span class="math inline">\(\begin{aligned} \mathop{\mathrm{span}}(A) \text{ is dense in } E &amp;&amp; \iff &amp;&amp; \left\lbrace X \in E';~ \forall a \in A, \left\langle a, X \right\rangle_E = 0 \right\rbrace = \{ 0_{E'} \}. \end{aligned}\)</span></p>
+</div>
+<p>The set on the right is sometimes denoted <span class="math inline">\(A^\perp\)</span> and called the <em>annihilator</em> of <span class="math inline">\(A\)</span>. Note that <span class="math inline">\(A^\perp = (\mathop{\mathrm{span}}(A))^\perp\)</span>. In the case where <span class="math inline">\(E\)</span> is a Euclidean space, <span class="math inline">\(A^\perp\)</span> is just (up to isometry) the orthogonal complement of <span class="math inline">\(\mathop{\mathrm{span}}(A)\)</span>.</p>
+<p>The proposition will be proved by applying the above density criterion. To do so we will need the following intuitively obvious lemma, characterizing the dual of <span class="math inline">\(L^p_{\mathop{\mathrm{Sym}}}(\mathbb{R}^n)\)</span>. A formal and rather uninteresting proof can be found in appendix of the <a href="https://guillaumew16.github.io/assets/pdf/symmetric_funs_density.pdf">LaTeX version</a>.</p>
+<div class="density-lemma math-statement" data-label="Lemma. ">
+<p>The dual of <span class="math inline">\(L^p_{\mathop{\mathrm{Sym}}}(\mathbb{R}^n)\)</span> is isometrically isomorphic to <span class="math inline">\(L^q_{\mathop{\mathrm{Sym}}}(\mathbb{R}^n)\)</span>.</p>
+</div>
+<p>We can now prove the proposition. The main argument is extracted from (Boyd Chua Desoer 1984, Theorem 2.5.2) in the context of Volterra series.</p>
+<div class="density-proof math-statement" data-label="Proof (of proposition). ">
+<p>To apply the density criterion to <span class="math inline">\(A = \left\lbrace f^{\otimes n}(\boldsymbol{t}) ;~ f \in L^p(\mathbb{R}) \right\rbrace\)</span> and <span class="math inline">\(E = L^p_{\mathop{\mathrm{Sym}}}(\mathbb{R}^n)\)</span>, let <span class="math inline">\(h \in E' \simeq L^q_{\mathop{\mathrm{Sym}}}(\mathbb{R}^n)\)</span> such that <span class="math inline">\(\left\langle f^{\otimes n}, h \right\rangle_{L^p} = 0\)</span> for all <span class="math inline">\(f \in L^p(\mathbb{R})\)</span>. Let us show that <span class="math inline">\(h=0\)</span>, from which the proposition will follow.</p>
+<p>Denote <span class="math inline">\(\Phi_h: L^p(\mathbb{R}) \to \mathbb{R}\)</span> the <span class="math inline">\(n\)</span>-homogeneous map</p>
+<p><span class="math display">\[
+\Phi_h[f]
+        = \left\langle f^{\otimes n}, h \right\rangle_{L^p}
+        = \int_{\mathbb{R}^n} d\boldsymbol{t}~ h(t_1,...,t_n) f(t_1)...f(t_n)
+\]</span></p>
+<p>and <span class="math inline">\(\Psi_h: L^p(\mathbb{R})^n \to \mathbb{R}\)</span> the associated <span class="math inline">\(n\)</span>-linear system</p>
+<p><span class="math display">\[
+\Psi_h\{f_1,...,f_n\}
+        = \left\langle f_1 \otimes ... \otimes f_n, h \right\rangle_{L^p}
+        = \int_{\mathbb{R}^n} d\boldsymbol{t}~ h(t_1,...,t_n) f_1(t_1)...f_n(t_n).
+\]</span></p>
+<p>The <span class="math inline">\(n\)</span>-linear system <span class="math inline">\(\Psi_h\{\cdot,...,\cdot\}\)</span> is symmetric in its arguments, since <span class="math inline">\(h\)</span> is permutation-invariant. So <span class="math inline">\(\Psi_h\)</span> is completely determined by the <span class="math inline">\(n\)</span>-homogeneous map <span class="math inline">\(\Phi_h[\cdot]\)</span> via the <a href="https://en.wikipedia.org/wiki/Polarization_of_an_algebraic_form">algebraic polarization identity</a></p>
+<p><span class="math display">\[
+n! \Psi_h\{f_1,...,f_n\}
+        = \left.
+            \frac{\partial}{\partial \alpha_1 ... \partial \alpha_n}
+        \right|_{\boldsymbol{\alpha}=0}
+        \Phi_h \left[ \sum_{i=1}^n \alpha_i f_i \right],
+\]</span></p>
+<p>and the right-hand-side is the differential of an identically zero map. Consequently,</p>
+<p><span class="math display">\[
+\forall f_1,...,f_n \in L^p(\mathbb{R}),~ \Psi_h\{f_1,...,f_n\} = 0.
+\]</span></p>
+<p>Now evaluate this at <span class="math inline">\(f_1(t) = \boldsymbol{1}_{t \in A_1}, ..., f_n(t) = \boldsymbol{1}_{t \in A_n}\)</span> for intervals <span class="math inline">\(A_i \subset \mathbb{R}\)</span>:</p>
+<p><span class="math display">\[
+\Psi_h\{f_1,...,f_n\} = \int_{\mathbb{R}^n} d\boldsymbol{t}~ h(t_1,...,t_n)
+        \boldsymbol{1}_{\boldsymbol{t}\in A_1 \times ... \times A_n} = 0.
+\]</span></p>
+<p>Since this holds for all <span class="math inline">\(A_i\)</span>, and hyperrectangles generate the Borel <span class="math inline">\(\sigma\)</span>-algebra, then <span class="math inline">\(h=0\)</span>, as claimed.</p>
+</div>
+</section>
+<section id="is-the-result-interestinguseful" class="level3">
+<h3 class="anchored" data-anchor-id="is-the-result-interestinguseful">Is the result interesting/useful?</h3>
+<p>For the subjects that I’m currently leaning towards, the result presented in this document is actually pretty useless, as it only talks about approximability per se. It doesn’t give any guarantees on the nature nor the number of functions <span class="math inline">\(f_i\)</span> required to <span class="math inline">\(\varepsilon\)</span>-approximate a given target function <span class="math inline">\(g\)</span>.</p>
+<p>However I still find the result technically interesting and surprising. I never heard about it before but I’m certain it must be somewhere out there already – I would be glad to know where and in what context.</p>
+<hr>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Disclaimer: the term "symmetric tensor function" may not be consistent with standard terminology, I haven’t checked.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p><a href="https://regularize.wordpress.com/2011/11/11/dual-spaces-of-continuous-functions/" class="uri">https://regularize.wordpress.com/2011/11/11/dual-spaces-of-continuous-functions/</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>I’m pretty sure the same holds if <span class="math inline">\(C_0\)</span> is replaced by <span class="math inline">\(C_b\)</span>, i.e, if we consider bounded continuous functions, instead of vanishing continuous.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/guillaumew16\.github\.io\/quarto-blog\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://guillaumew16.github.io/quarto-blog/index.html</loc>
-    <lastmod>2026-11-09T20:25:38.923Z</lastmod>
-  </url>
-  <url>
-    <loc>https://guillaumew16.github.io/quarto-blog/2024/hypocoercivity1/index.html</loc>
-    <lastmod>2026-11-09T20:25:38.906Z</lastmod>
+    <loc>https://guillaumew16.github.io/quarto-blog/2021/symmetric_funs_density.html</loc>
+    <lastmod>2026-11-13T21:53:08.325Z</lastmod>
   </url>
   <url>
     <loc>https://guillaumew16.github.io/quarto-blog/2024/hypocoercivity2/index.html</loc>
-    <lastmod>2026-11-09T20:25:38.922Z</lastmod>
+    <lastmod>2026-11-13T21:53:08.344Z</lastmod>
+  </url>
+  <url>
+    <loc>https://guillaumew16.github.io/quarto-blog/2026/sinkhorn1.html</loc>
+    <lastmod>2026-11-13T21:53:08.344Z</lastmod>
+  </url>
+  <url>
+    <loc>https://guillaumew16.github.io/quarto-blog/2024/hypocoercivity1/index.html</loc>
+    <lastmod>2026-11-13T21:53:08.329Z</lastmod>
+  </url>
+  <url>
+    <loc>https://guillaumew16.github.io/quarto-blog/index.html</loc>
+    <lastmod>2026-11-13T21:53:08.344Z</lastmod>
   </url>
 </urlset>
